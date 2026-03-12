@@ -78,6 +78,11 @@ const Signup = () => {
               {errors.password && <p className="text-destructive text-xs mt-1">{errors.password}</p>}
             </div>
             <div>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1" />
+              {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword}</p>}
+            </div>
+            <div>
               <Label>I want to</Label>
               <div className="flex gap-3 mt-1">
                 <button type="button" onClick={() => setRole("student")} className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${role === "student" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}>
