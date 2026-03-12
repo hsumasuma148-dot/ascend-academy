@@ -50,6 +50,11 @@ const Login = () => {
         <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
           <h1 className="text-2xl font-bold text-foreground text-center mb-2">Welcome Back</h1>
           <p className="text-muted-foreground text-center text-sm mb-6">Log in to continue learning</p>
+          <div className="bg-lms-surface border border-border rounded-lg p-3 mb-4 text-xs text-muted-foreground">
+            <p className="font-medium text-foreground mb-1">Demo Credentials:</p>
+            <p>Email: <span className="font-mono text-primary">demo@learnhub.com</span></p>
+            <p>Password: <span className="font-mono text-primary">123456</span></p>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
