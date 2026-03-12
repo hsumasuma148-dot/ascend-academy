@@ -16,10 +16,7 @@ const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0">
-        <img src={heroBg} alt="" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 gradient-hero opacity-90" />
-      </div>
+      <div className="absolute inset-0 gradient-hero" />
 
       <div className="container relative mx-auto px-4 py-20 md:py-28">
         <div className="max-w-2xl">
