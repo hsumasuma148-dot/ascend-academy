@@ -3,7 +3,7 @@ import { ArrowRight, Play, Users, BookOpen, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { stats } from "@/data/mockData";
-import heroBg from "@/assets/hero-bg.jpg";
+
 
 const iconMap: Record<string, React.ReactNode> = {
   "Students": <Users className="h-5 w-5" />,
