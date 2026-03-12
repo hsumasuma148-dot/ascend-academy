@@ -18,6 +18,7 @@ const Navbar = () => {
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/courses", label: "Courses" },
+    { to: "/mentors", label: "Mentors" },
     { to: "/dashboard", label: "My Learning" },
     { to: "/instructor", label: "Teach" },
   ];

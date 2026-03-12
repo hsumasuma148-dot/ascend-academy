@@ -36,6 +36,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/payment" element={<Payment />} />
+              <Route path="/mentors" element={<Mentors />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <AIChatAssistant />

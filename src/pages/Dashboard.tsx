@@ -5,14 +5,27 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { courses, enrolledCourses } from "@/data/mockData";
+import { useCart } from "@/contexts/CartContext";
 
 const Dashboard = () => {
-  const enrolled = enrolledCourses.map((ec) => {
-    const course = courses.find((c) => c.id === ec.courseId)!;
-    return { ...ec, course };
-  });
+  const { purchasedCourseIds } = useCart();
 
-  const totalProgress = Math.round(enrolled.reduce((a, b) => a + b.progress, 0) / enrolled.length);
+  // Merge pre-enrolled + purchased courses
+  const allEnrolledIds = [...new Set([...enrolledCourses.map((e) => e.courseId), ...purchasedCourseIds])];
+
+  const enrolled = allEnrolledIds.map((id) => {
+    const course = courses.find((c) => c.id === id);
+    if (!course) return null;
+    const ec = enrolledCourses.find((e) => e.courseId === id);
+    return {
+      course,
+      progress: ec?.progress ?? 0,
+      completedLessons: ec?.completedLessons ?? [],
+      enrolledAt: ec?.enrolledAt ?? new Date().toISOString().split("T")[0],
+    };
+  }).filter(Boolean) as { course: typeof courses[0]; progress: number; completedLessons: string[]; enrolledAt: string }[];
+
+  const totalProgress = enrolled.length > 0 ? Math.round(enrolled.reduce((a, b) => a + b.progress, 0) / enrolled.length) : 0;
   const completedCount = enrolled.filter((e) => e.progress === 100).length;
 
   return (
@@ -41,7 +54,7 @@ const Dashboard = () => {
         {/* Enrolled Courses */}
         <h2 className="text-xl font-bold text-foreground mb-4">Continue Learning</h2>
         <div className="space-y-4">
-          {enrolled.map(({ course, progress, completedLessons, enrolledAt }) => (
+          {enrolled.map(({ course, progress, completedLessons }) => (
             <Link
               key={course.id}
               to={`/courses/${course.slug}`}
