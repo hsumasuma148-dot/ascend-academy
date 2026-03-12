@@ -40,10 +40,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signup = async (name: string, email: string, password: string, role: "student" | "instructor"): Promise<boolean> => {
+    // Demo signup — just validates, doesn't auto-login (user goes to login page)
     if (name && email && password.length >= 6) {
-      const mockUser: User = { id: crypto.randomUUID(), name, email, role };
-      setUser(mockUser);
-      localStorage.setItem("lms_user", JSON.stringify(mockUser));
       return true;
     }
     return false;
