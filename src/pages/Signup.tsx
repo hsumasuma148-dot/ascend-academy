@@ -11,6 +11,7 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState<"student" | "instructor">("student");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -25,6 +26,8 @@ const Signup = () => {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Invalid email";
     if (!password) errs.password = "Password is required";
     else if (password.length < 6) errs.password = "Minimum 6 characters";
+    if (!confirmPassword) errs.confirmPassword = "Please confirm your password";
+    else if (password !== confirmPassword) errs.confirmPassword = "Passwords do not match";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -36,8 +39,8 @@ const Signup = () => {
     const success = await signup(name, email, password, role);
     setLoading(false);
     if (success) {
-      toast.success("Account created! Welcome to LearnHub.");
-      navigate("/dashboard");
+      toast.success("Account created! Please log in.");
+      navigate("/login");
     } else {
       toast.error("Signup failed. Please try again.");
     }
@@ -73,6 +76,11 @@ const Signup = () => {
                 </button>
               </div>
               {errors.password && <p className="text-destructive text-xs mt-1">{errors.password}</p>}
+            </div>
+            <div>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1" />
+              {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword}</p>}
             </div>
             <div>
               <Label>I want to</Label>
