@@ -1,19 +1,51 @@
-import { useParams, Link } from "react-router-dom";
-import { Star, Clock, BookOpen, Users, Award, Play, Lock, CheckCircle2, ArrowLeft } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Star, Clock, BookOpen, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { courses, enrolledCourses } from "@/data/mockData";
+import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { toast } from "sonner";
 
+const CourseHeader = ({ course }: { course: typeof courses[0] }) => (
+  <div className="gradient-hero">
+    <div className="container mx-auto px-4 py-12">
+      <Link to="/courses" className="inline-flex items-center text-primary-foreground/70 hover:text-primary-foreground text-sm mb-4">
+        <ArrowLeft className="h-4 w-4 mr-1" /> Back to Courses
+      </Link>
+      <div className="max-w-3xl">
+        <div className="flex items-center gap-2 mb-3">
+          <Badge className="bg-primary-foreground/20 text-primary-foreground border-none">{course.category}</Badge>
+          {course.isBestseller && <Badge className="bg-lms-warning text-foreground">Bestseller</Badge>}
+          <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">{course.level}</Badge>
+        </div>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-4">{course.title}</h1>
+        <p className="text-lg text-primary-foreground/80 mb-4">{course.description}</p>
+        <div className="flex flex-wrap items-center gap-4 text-sm text-primary-foreground/70">
+          <span className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-lms-star text-lms-star" />
+            <strong className="text-primary-foreground">{course.rating}</strong> ({course.reviewCount.toLocaleString()} reviews)
+          </span>
+          <span className="flex items-center gap-1"><Users className="h-4 w-4" />{course.studentCount.toLocaleString()} students</span>
+          <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{course.duration}</span>
+          <span className="flex items-center gap-1"><BookOpen className="h-4 w-4" />{course.lessonCount} lessons</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const CourseDetail = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const course = courses.find((c) => c.slug === slug);
+  const { addToCart, isInCart, isPurchased } = useCart();
   const enrollment = course ? enrolledCourses.find((e) => e.courseId === course.id) : null;
-  const [enrolled, setEnrolled] = useState(!!enrollment);
+  const purchased = course ? isPurchased(course.id) : false;
+  const [enrolled, setEnrolled] = useState(purchased || !!enrollment);
   const [completedLessons, setCompletedLessons] = useState<string[]>(enrollment?.completedLessons || []);
 
   if (!course) {
@@ -31,9 +63,14 @@ const CourseDetail = () => {
   const progress = enrolled ? Math.round((completedLessons.length / course.lessons.length) * 100) : 0;
   const isComplete = progress === 100;
 
-  const handleEnroll = () => {
-    setEnrolled(true);
-    toast.success("Successfully enrolled! Start learning now.");
+  const handleBuyNow = () => {
+    addToCart(course);
+    navigate("/payment");
+  };
+
+  const handleAddToCart = () => {
+    addToCart(course);
+    toast.success("Added to cart!");
   };
 
   const toggleLesson = (lessonId: string) => {
@@ -46,42 +83,34 @@ const CourseDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-
-      {/* Course Header */}
-      <div className="gradient-hero">
-        <div className="container mx-auto px-4 py-12">
-          <Link to="/courses" className="inline-flex items-center text-primary-foreground/70 hover:text-primary-foreground text-sm mb-4">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back to Courses
-          </Link>
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-2 mb-3">
-              <Badge className="bg-primary-foreground/20 text-primary-foreground border-none">{course.category}</Badge>
-              {course.isBestseller && <Badge className="bg-lms-warning text-foreground">Bestseller</Badge>}
-              <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">{course.level}</Badge>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-4">{course.title}</h1>
-            <p className="text-lg text-primary-foreground/80 mb-4">{course.description}</p>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-primary-foreground/70">
-              <span className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-lms-star text-lms-star" />
-                <strong className="text-primary-foreground">{course.rating}</strong> ({course.reviewCount.toLocaleString()} reviews)
-              </span>
-              <span className="flex items-center gap-1"><Users className="h-4 w-4" />{course.studentCount.toLocaleString()} students</span>
-              <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{course.duration}</span>
-              <span className="flex items-center gap-1"><BookOpen className="h-4 w-4" />{course.lessonCount} lessons</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CourseHeader course={course} />
 
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* About */}
             <div>
               <h2 className="text-xl font-bold text-foreground mb-3">About This Course</h2>
               <p className="text-muted-foreground leading-relaxed">{course.longDescription}</p>
+            </div>
+
+            {/* Course Includes */}
+            <div className="bg-lms-surface rounded-xl p-6">
+              <h2 className="text-xl font-bold text-foreground mb-3">This course includes</h2>
+              <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground">
+                {[
+                  `${course.duration} of video content`,
+                  `${course.lessonCount} lessons`,
+                  "Downloadable resources",
+                  "Assignments & quizzes",
+                  "Certificate of completion",
+                  "Lifetime access",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-lms-success flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Instructor */}
@@ -110,27 +139,15 @@ const CourseDetail = () => {
                     <button
                       key={lesson.id}
                       onClick={() => toggleLesson(lesson.id)}
-                      className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-lms-surface ${
-                        isCompleted ? "bg-lms-success/5" : ""
-                      }`}
+                      className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-lms-surface ${isCompleted ? "bg-lms-success/5" : ""}`}
                       disabled={!enrolled && !lesson.isPreview}
                     >
                       <div className="flex-shrink-0">
-                        {isCompleted ? (
-                          <CheckCircle2 className="h-5 w-5 text-lms-success" />
-                        ) : enrolled || lesson.isPreview ? (
-                          <Play className="h-5 w-5 text-primary" />
-                        ) : (
-                          <Lock className="h-5 w-5 text-muted-foreground/40" />
-                        )}
+                        {isCompleted ? <CheckCircle2 className="h-5 w-5 text-lms-success" /> : enrolled || lesson.isPreview ? <Play className="h-5 w-5 text-primary" /> : <Lock className="h-5 w-5 text-muted-foreground/40" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-medium ${isCompleted ? "text-lms-success" : "text-foreground"}`}>
-                          {lesson.order}. {lesson.title}
-                        </p>
-                        {lesson.isPreview && !enrolled && (
-                          <span className="text-xs text-primary">Preview</span>
-                        )}
+                        <p className={`text-sm font-medium ${isCompleted ? "text-lms-success" : "text-foreground"}`}>{lesson.order}. {lesson.title}</p>
+                        {lesson.isPreview && !enrolled && <span className="text-xs text-primary">Preview</span>}
                       </div>
                       <span className="text-xs text-muted-foreground flex-shrink-0">{lesson.duration}</span>
                     </button>
@@ -175,8 +192,12 @@ const CourseDetail = () => {
                 </>
               ) : (
                 <>
-                  <Button onClick={handleEnroll} className="w-full gradient-primary text-primary-foreground font-bold text-base py-6">
-                    Enroll Now
+                  <Button onClick={handleBuyNow} className="w-full gradient-primary text-primary-foreground font-bold text-base py-6">
+                    Buy Now
+                  </Button>
+                  <Button onClick={handleAddToCart} variant="outline" className="w-full font-semibold" disabled={isInCart(course.id)}>
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {isInCart(course.id) ? "In Cart" : "Add to Cart"}
                   </Button>
                   <p className="text-xs text-center text-muted-foreground">30-day money-back guarantee</p>
                 </>
