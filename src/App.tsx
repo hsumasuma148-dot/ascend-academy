@@ -14,6 +14,7 @@ import InstructorDashboard from "./pages/InstructorDashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Payment from "./pages/Payment";
+import Mentors from "./pages/Mentors";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
