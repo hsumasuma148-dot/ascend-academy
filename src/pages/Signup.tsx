@@ -26,6 +26,8 @@ const Signup = () => {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Invalid email";
     if (!password) errs.password = "Password is required";
     else if (password.length < 6) errs.password = "Minimum 6 characters";
+    if (!confirmPassword) errs.confirmPassword = "Please confirm your password";
+    else if (password !== confirmPassword) errs.confirmPassword = "Passwords do not match";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
