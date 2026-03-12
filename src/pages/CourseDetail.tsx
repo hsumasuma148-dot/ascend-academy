@@ -10,34 +10,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const CourseHeader = ({ course }: { course: typeof courses[0] }) => (
-  <div className="gradient-hero">
-    <div className="container mx-auto px-4 py-12">
-      <Link to="/courses" className="inline-flex items-center text-primary-foreground/70 hover:text-primary-foreground text-sm mb-4">
-        <ArrowLeft className="h-4 w-4 mr-1" /> Back to Courses
-      </Link>
-      <div className="max-w-3xl">
-        <div className="flex items-center gap-2 mb-3">
-          <Badge className="bg-primary-foreground/20 text-primary-foreground border-none">{course.category}</Badge>
-          {course.isBestseller && <Badge className="bg-lms-warning text-foreground">Bestseller</Badge>}
-          <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">{course.level}</Badge>
-        </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-4">{course.title}</h1>
-        <p className="text-lg text-primary-foreground/80 mb-4">{course.description}</p>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-primary-foreground/70">
-          <span className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-lms-star text-lms-star" />
-            <strong className="text-primary-foreground">{course.rating}</strong> ({course.reviewCount.toLocaleString()} reviews)
-          </span>
-          <span className="flex items-center gap-1"><Users className="h-4 w-4" />{course.studentCount.toLocaleString()} students</span>
-          <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{course.duration}</span>
-          <span className="flex items-center gap-1"><BookOpen className="h-4 w-4" />{course.lessonCount} lessons</span>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 const CourseDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -47,6 +19,9 @@ const CourseDetail = () => {
   const purchased = course ? isPurchased(course.id) : false;
   const [enrolled, setEnrolled] = useState(purchased || !!enrollment);
   const [completedLessons, setCompletedLessons] = useState<string[]>(enrollment?.completedLessons || []);
+  const [activeLesson, setActiveLesson] = useState<typeof course extends undefined ? never : NonNullable<typeof course>["lessons"][0] | null>(
+    course ? course.lessons[0] : null
+  );
 
   if (!course) {
     return (
@@ -80,14 +55,115 @@ const CourseDetail = () => {
     );
   };
 
+  const canPlayLesson = (lesson: typeof course.lessons[0]) => {
+    return enrolled || lesson.isPreview;
+  };
+
+  const handleLessonClick = (lesson: typeof course.lessons[0]) => {
+    if (canPlayLesson(lesson)) {
+      setActiveLesson(lesson);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <CourseHeader course={course} />
 
-      <div className="container mx-auto px-4 py-10">
+      {/* Header */}
+      <div className="gradient-hero">
+        <div className="container mx-auto px-4 py-8">
+          <Link to="/courses" className="inline-flex items-center text-primary-foreground/70 hover:text-primary-foreground text-sm mb-4">
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back to Courses
+          </Link>
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Badge className="bg-primary-foreground/20 text-primary-foreground border-none">{course.category}</Badge>
+              {course.isBestseller && <Badge className="bg-lms-warning text-foreground">Bestseller</Badge>}
+              <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">{course.level}</Badge>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-3">{course.title}</h1>
+            <p className="text-primary-foreground/80 mb-3">{course.description}</p>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-primary-foreground/70">
+              <span className="flex items-center gap-1">
+                <Star className="h-4 w-4 fill-lms-star text-lms-star" />
+                <strong className="text-primary-foreground">{course.rating}</strong> ({course.reviewCount.toLocaleString()} reviews)
+              </span>
+              <span className="flex items-center gap-1"><Users className="h-4 w-4" />{course.studentCount.toLocaleString()} students</span>
+              <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{course.duration}</span>
+              <span>Created by <strong className="text-primary-foreground">{course.instructor}</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main content */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Video Player */}
+            {activeLesson && canPlayLesson(activeLesson) && activeLesson.videoUrl && (
+              <div className="space-y-3">
+                <div className="relative w-full rounded-xl overflow-hidden border border-border bg-foreground/5" style={{ paddingBottom: "56.25%" }}>
+                  <iframe
+                    className="absolute inset-0 w-full h-full"
+                    src={activeLesson.videoUrl}
+                    title={activeLesson.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">
+                    Lesson {activeLesson.order}: {activeLesson.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">{activeLesson.duration}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Lessons List */}
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-4">
+                Course Content · {course.lessons.length} lessons
+              </h2>
+              <div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
+                {course.lessons.map((lesson) => {
+                  const isCompleted = completedLessons.includes(lesson.id);
+                  const isActive = activeLesson?.id === lesson.id;
+                  const playable = canPlayLesson(lesson);
+                  return (
+                    <button
+                      key={lesson.id}
+                      onClick={() => {
+                        handleLessonClick(lesson);
+                        if (enrolled) toggleLesson(lesson.id);
+                      }}
+                      className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-lms-surface ${isCompleted ? "bg-lms-success/5" : ""} ${isActive ? "bg-primary/5 border-l-4 border-l-primary" : ""}`}
+                      disabled={!playable}
+                    >
+                      <div className="flex-shrink-0">
+                        {isCompleted ? (
+                          <CheckCircle2 className="h-5 w-5 text-lms-success" />
+                        ) : playable ? (
+                          <Play className="h-5 w-5 text-primary" />
+                        ) : (
+                          <Lock className="h-5 w-5 text-muted-foreground/40" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-medium ${isCompleted ? "text-lms-success" : isActive ? "text-primary" : "text-foreground"}`}>
+                          {lesson.order}. {lesson.title}
+                        </p>
+                        {lesson.isPreview && !enrolled && <span className="text-xs text-primary">Preview</span>}
+                      </div>
+                      <span className="text-xs text-muted-foreground flex-shrink-0">{lesson.duration}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* About */}
             <div>
               <h2 className="text-xl font-bold text-foreground mb-3">About This Course</h2>
               <p className="text-muted-foreground leading-relaxed">{course.longDescription}</p>
@@ -126,35 +202,6 @@ const CourseDetail = () => {
                 </div>
               </div>
             </div>
-
-            {/* Lessons */}
-            <div>
-              <h2 className="text-xl font-bold text-foreground mb-4">
-                Course Content · {course.lessons.length} lessons
-              </h2>
-              <div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
-                {course.lessons.map((lesson) => {
-                  const isCompleted = completedLessons.includes(lesson.id);
-                  return (
-                    <button
-                      key={lesson.id}
-                      onClick={() => toggleLesson(lesson.id)}
-                      className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-lms-surface ${isCompleted ? "bg-lms-success/5" : ""}`}
-                      disabled={!enrolled && !lesson.isPreview}
-                    >
-                      <div className="flex-shrink-0">
-                        {isCompleted ? <CheckCircle2 className="h-5 w-5 text-lms-success" /> : enrolled || lesson.isPreview ? <Play className="h-5 w-5 text-primary" /> : <Lock className="h-5 w-5 text-muted-foreground/40" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-medium ${isCompleted ? "text-lms-success" : "text-foreground"}`}>{lesson.order}. {lesson.title}</p>
-                        {lesson.isPreview && !enrolled && <span className="text-xs text-primary">Preview</span>}
-                      </div>
-                      <span className="text-xs text-muted-foreground flex-shrink-0">{lesson.duration}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
           {/* Sidebar */}
@@ -186,7 +233,7 @@ const CourseDetail = () => {
                       </Button>
                     </div>
                   )}
-                  <Button className="w-full gradient-primary text-primary-foreground font-semibold">
+                  <Button onClick={() => setActiveLesson(course.lessons[0])} className="w-full gradient-primary text-primary-foreground font-semibold">
                     Continue Learning
                   </Button>
                 </>
@@ -207,6 +254,7 @@ const CourseDetail = () => {
                 <div className="flex justify-between"><span>Duration</span><span className="font-medium text-foreground">{course.duration}</span></div>
                 <div className="flex justify-between"><span>Lessons</span><span className="font-medium text-foreground">{course.lessonCount}</span></div>
                 <div className="flex justify-between"><span>Level</span><span className="font-medium text-foreground">{course.level}</span></div>
+                <div className="flex justify-between"><span>Instructor</span><span className="font-medium text-foreground">{course.instructor}</span></div>
                 <div className="flex justify-between"><span>Certificate</span><span className="font-medium text-foreground">Yes</span></div>
               </div>
             </div>

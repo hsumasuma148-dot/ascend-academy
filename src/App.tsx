@@ -14,6 +14,7 @@ import InstructorDashboard from "./pages/InstructorDashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Payment from "./pages/Payment";
+import Mentors from "./pages/Mentors";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/payment" element={<Payment />} />
+              <Route path="/mentors" element={<Mentors />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <AIChatAssistant />
