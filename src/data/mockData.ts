@@ -91,7 +91,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-3",
     name: "Michael Park",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Michael+Park&background=22c55e&color=fff&size=200&bold=true",
     expertise: ["Docker", "Kubernetes", "DevOps"],
     bio: "DevOps lead at Netflix. Kubernetes contributor and conference speaker.",
     longBio: "Michael Park is a DevOps Lead at Netflix and an active contributor to the Kubernetes open-source project. A sought-after conference speaker, he teaches container orchestration and modern deployment practices with clarity and depth.",
