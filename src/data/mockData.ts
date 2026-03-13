@@ -171,7 +171,7 @@ export const courses: Course[] = [
     longDescription: "This comprehensive Python course takes you from absolute beginner to professional developer. You'll learn core Python concepts, object-oriented programming, web scraping, data analysis, and much more. With hands-on projects and real-world examples, you'll be coding confidently in no time.",
     instructor: "Rahul Sharma",
     instructorId: "ins-1",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=11",
     instructorBio: "Senior Python developer with 12+ years of experience. Passionate about teaching clean code and software design.",
     thumbnail: "",
     category: "Programming",
