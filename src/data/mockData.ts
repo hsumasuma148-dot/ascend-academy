@@ -151,7 +151,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-8",
     name: "Meera Joshi",
-    avatar: "https://randomuser.me/api/portraits/women/56.jpg",
+    avatar: "https://i.pravatar.cc/150?img=32",
     expertise: ["Cybersecurity", "Ethical Hacking", "Pentesting"],
     bio: "CISSP certified cybersecurity expert and ethical hacking instructor.",
     longBio: "Meera Joshi is a CISSP-certified cybersecurity expert who teaches ethical hacking and penetration testing with real-world scenarios, preparing students for careers in cybersecurity.",
