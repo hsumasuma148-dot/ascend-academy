@@ -151,7 +151,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-8",
     name: "Rachel Foster",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Rachel+Foster&background=ec4899&color=fff&size=200&bold=true",
     expertise: ["Cybersecurity", "Ethical Hacking", "Pentesting"],
     bio: "CISSP certified. Former cybersecurity analyst at the NSA.",
     longBio: "Rachel Foster is a CISSP-certified cybersecurity expert and former analyst at the NSA. She teaches ethical hacking and penetration testing with real-world scenarios, preparing students for careers in cybersecurity.",
