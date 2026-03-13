@@ -103,7 +103,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-4",
     name: "Dr. Emily Watson",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Emily+Watson&background=f43f5e&color=fff&size=200&bold=true",
     expertise: ["Python", "Pandas", "Data Science"],
     bio: "Data Scientist at Meta. PhD in Statistics from Stanford.",
     longBio: "Dr. Emily Watson is a Data Scientist at Meta with a PhD in Statistics from Stanford University. She specializes in data analytics and visualization, helping thousands of students transform raw data into actionable insights using Python and its ecosystem.",
