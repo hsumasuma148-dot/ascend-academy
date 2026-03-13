@@ -127,7 +127,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-6",
     name: "Anita Desai",
-    avatar: "https://randomuser.me/api/portraits/women/33.jpg",
+    avatar: "https://i.pravatar.cc/150?img=23",
     expertise: ["SQL", "Database", "Data Engineering"],
     bio: "Senior Database Architect with 10+ years in data engineering and analytics.",
     longBio: "Anita Desai is a Senior Database Architect with a passion for teaching SQL and data engineering. She helps students master databases from fundamentals to advanced optimization.",
