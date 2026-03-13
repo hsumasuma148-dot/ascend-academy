@@ -353,7 +353,7 @@ export const courses: Course[] = [
     longDescription: "Complete preparation for the AWS Cloud Practitioner certification. Learn cloud computing concepts, AWS services, security, pricing, and architecture best practices.",
     instructor: "Karan Mehta",
     instructorId: "ins-7",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/22.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=59",
     instructorBio: "AWS Solutions Architect Professional. Cloud consultant for Fortune 500 companies.",
     thumbnail: "",
     category: "Cloud Computing",
