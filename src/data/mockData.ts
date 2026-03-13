@@ -67,7 +67,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-1",
     name: "Dr. Sarah Chen",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Sarah+Chen&background=6366f1&color=fff&size=200&bold=true",
     expertise: ["Python", "Programming", "OOP"],
     bio: "PhD in Computer Science with 15+ years of teaching experience. Former Google engineer.",
     longBio: "Dr. Sarah Chen holds a PhD in Computer Science from MIT and has spent over 15 years teaching programming at top universities and tech bootcamps. As a former Google engineer, she brings real-world industry experience into her courses, making complex topics accessible and practical.",
@@ -79,7 +79,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-2",
     name: "James Rodriguez",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=James+Rodriguez&background=0ea5e9&color=fff&size=200&bold=true",
     expertise: ["SQL", "Database", "Data Engineering"],
     bio: "Senior Database Architect at Amazon. 10+ years of experience in data engineering.",
     longBio: "James Rodriguez is a Senior Database Architect at Amazon with a passion for teaching SQL and data engineering. With over a decade of hands-on experience building scalable data systems, he helps students master databases from fundamentals to advanced optimization techniques.",
@@ -91,7 +91,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-3",
     name: "Michael Park",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Michael+Park&background=22c55e&color=fff&size=200&bold=true",
     expertise: ["Docker", "Kubernetes", "DevOps"],
     bio: "DevOps lead at Netflix. Kubernetes contributor and conference speaker.",
     longBio: "Michael Park is a DevOps Lead at Netflix and an active contributor to the Kubernetes open-source project. A sought-after conference speaker, he teaches container orchestration and modern deployment practices with clarity and depth.",
@@ -103,7 +103,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-4",
     name: "Dr. Emily Watson",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Emily+Watson&background=f43f5e&color=fff&size=200&bold=true",
     expertise: ["Python", "Pandas", "Data Science"],
     bio: "Data Scientist at Meta. PhD in Statistics from Stanford.",
     longBio: "Dr. Emily Watson is a Data Scientist at Meta with a PhD in Statistics from Stanford University. She specializes in data analytics and visualization, helping thousands of students transform raw data into actionable insights using Python and its ecosystem.",
@@ -115,7 +115,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-5",
     name: "Prof. Alex Turner",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Alex+Turner&background=a855f7&color=fff&size=200&bold=true",
     expertise: ["AI", "Machine Learning", "Deep Learning"],
     bio: "AI Research Lead at OpenAI. Published 50+ papers on deep learning.",
     longBio: "Prof. Alex Turner leads AI research at OpenAI and has published over 50 peer-reviewed papers on deep learning and neural networks. His courses bridge the gap between cutting-edge research and practical implementation.",
@@ -127,7 +127,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-6",
     name: "Lisa Chang",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Lisa+Chang&background=f59e0b&color=fff&size=200&bold=true",
     expertise: ["React", "TypeScript", "Web Development"],
     bio: "Staff Engineer at Vercel. React core contributor.",
     longBio: "Lisa Chang is a Staff Engineer at Vercel and a core contributor to the React framework. She brings deep knowledge of modern frontend architecture to her courses, teaching developers how to build production-grade web applications.",
@@ -139,7 +139,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-7",
     name: "David Kim",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=David+Kim&background=14b8a6&color=fff&size=200&bold=true",
     expertise: ["AWS", "Cloud Computing", "DevOps"],
     bio: "AWS Solutions Architect Professional. Cloud consultant for Fortune 500 companies.",
     longBio: "David Kim is an AWS Solutions Architect Professional and a cloud consultant who has helped Fortune 500 companies migrate to the cloud. His hands-on approach to teaching cloud computing has helped thousands pass their AWS certifications.",
@@ -151,7 +151,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-8",
     name: "Rachel Foster",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Rachel+Foster&background=ec4899&color=fff&size=200&bold=true",
     expertise: ["Cybersecurity", "Ethical Hacking", "Pentesting"],
     bio: "CISSP certified. Former cybersecurity analyst at the NSA.",
     longBio: "Rachel Foster is a CISSP-certified cybersecurity expert and former analyst at the NSA. She teaches ethical hacking and penetration testing with real-world scenarios, preparing students for careers in cybersecurity.",
