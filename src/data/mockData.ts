@@ -204,7 +204,7 @@ export const courses: Course[] = [
     longDescription: "Become a SQL expert with this hands-on course. From basic SELECT statements to advanced window functions, CTEs, and performance optimization.",
     instructor: "Anita Desai",
     instructorId: "ins-6",
-    instructorAvatar: "https://randomuser.me/api/portraits/women/33.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=23",
     instructorBio: "Senior Database Architect with 10+ years in data engineering and analytics.",
     thumbnail: "",
     category: "Data Science",
