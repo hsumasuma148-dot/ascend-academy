@@ -139,7 +139,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-7",
     name: "David Kim",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=David+Kim&background=14b8a6&color=fff&size=200&bold=true",
     expertise: ["AWS", "Cloud Computing", "DevOps"],
     bio: "AWS Solutions Architect Professional. Cloud consultant for Fortune 500 companies.",
     longBio: "David Kim is an AWS Solutions Architect Professional and a cloud consultant who has helped Fortune 500 companies migrate to the cloud. His hands-on approach to teaching cloud computing has helped thousands pass their AWS certifications.",
