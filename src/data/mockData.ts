@@ -115,7 +115,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-5",
     name: "Vikram Singh",
-    avatar: "https://randomuser.me/api/portraits/men/52.jpg",
+    avatar: "https://i.pravatar.cc/150?img=53",
     expertise: ["Docker", "Kubernetes", "DevOps"],
     bio: "DevOps lead at a major tech company. Kubernetes contributor and conference speaker.",
     longBio: "Vikram Singh is a DevOps Lead and active contributor to the Kubernetes open-source project. He teaches container orchestration and modern deployment practices with clarity and depth.",
