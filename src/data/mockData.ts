@@ -294,7 +294,7 @@ export const courses: Course[] = [
     longDescription: "Comprehensive AI and Machine Learning course covering supervised learning, unsupervised learning, deep learning, NLP, and computer vision with real-world projects.",
     instructor: "Sneha Reddy",
     instructorId: "ins-4",
-    instructorAvatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=9",
     instructorBio: "AI Research Lead with 50+ published papers on deep learning and neural networks.",
     thumbnail: "",
     category: "AI & ML",
