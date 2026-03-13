@@ -381,7 +381,7 @@ export const courses: Course[] = [
     longDescription: "Become a cybersecurity professional. Learn network security, vulnerability assessment, penetration testing, and ethical hacking techniques used by industry experts.",
     instructor: "Meera Joshi",
     instructorId: "ins-8",
-    instructorAvatar: "https://randomuser.me/api/portraits/women/56.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=32",
     instructorBio: "CISSP certified cybersecurity expert and ethical hacking instructor.",
     thumbnail: "",
     category: "Cybersecurity",
