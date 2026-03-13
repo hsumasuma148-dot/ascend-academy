@@ -79,7 +79,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-2",
     name: "Priya Verma",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    avatar: "https://i.pravatar.cc/150?img=5",
     expertise: ["Data Science", "Python", "Pandas"],
     bio: "Data Scientist at Google. PhD in Statistics from IIT Delhi.",
     longBio: "Priya Verma is a Data Scientist at Google with a PhD in Statistics. She specializes in data analytics and machine learning, helping thousands of students transform raw data into actionable insights.",
