@@ -103,7 +103,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-4",
     name: "Sneha Reddy",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    avatar: "https://i.pravatar.cc/150?img=9",
     expertise: ["AI", "Machine Learning", "Deep Learning"],
     bio: "AI Research Lead with 50+ published papers on deep learning and neural networks.",
     longBio: "Sneha Reddy leads AI research and has published over 50 peer-reviewed papers on deep learning. Her courses bridge the gap between cutting-edge research and practical implementation.",
