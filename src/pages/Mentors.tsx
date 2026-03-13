@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Star, Users, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -8,13 +9,25 @@ import { instructors, courses } from "@/data/mockData";
 const MentorCard = ({ mentor }: { mentor: typeof instructors[0] }) => {
   const mentorCourses = courses.filter((c) => c.instructorId === mentor.id);
   const initials = mentor.name.split(" ").map((n) => n[0]).join("");
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
       <div className="flex flex-col items-center text-center">
-        <div className="w-20 h-20 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-2xl mb-4">
-          {initials}
-        </div>
+        {/* Profile Image with fallback */}
+        {mentor.avatar && !imgError ? (
+          <img
+            src={mentor.avatar}
+            alt={mentor.name}
+            className="w-20 h-20 rounded-full object-cover border-2 border-primary/20 mb-4"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-2xl mb-4">
+            {initials}
+          </div>
+        )}
+
         <h3 className="font-bold text-foreground text-lg">{mentor.name}</h3>
         <div className="flex flex-wrap justify-center gap-1 mt-2 mb-3">
           {mentor.expertise.map((tag) => (
