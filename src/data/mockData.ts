@@ -235,7 +235,7 @@ export const courses: Course[] = [
     longDescription: "Learn Docker and Kubernetes from the ground up. This course covers containerization, Docker Compose, Kubernetes deployments, services, and production-ready configurations.",
     instructor: "Vikram Singh",
     instructorId: "ins-5",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/52.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=53",
     instructorBio: "DevOps lead at a major tech company. Kubernetes contributor and conference speaker.",
     thumbnail: "",
     category: "DevOps",
