@@ -115,7 +115,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-5",
     name: "Prof. Alex Turner",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Alex+Turner&background=a855f7&color=fff&size=200&bold=true",
     expertise: ["AI", "Machine Learning", "Deep Learning"],
     bio: "AI Research Lead at OpenAI. Published 50+ papers on deep learning.",
     longBio: "Prof. Alex Turner leads AI research at OpenAI and has published over 50 peer-reviewed papers on deep learning and neural networks. His courses bridge the gap between cutting-edge research and practical implementation.",
