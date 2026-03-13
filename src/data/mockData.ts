@@ -67,7 +67,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-1",
     name: "Rahul Sharma",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    avatar: "https://i.pravatar.cc/150?img=11",
     expertise: ["Python", "Programming", "OOP"],
     bio: "Senior Python developer with 12+ years of experience. Passionate about teaching clean code and software design.",
     longBio: "Rahul Sharma is a senior Python developer who has trained over 50,000 students worldwide. With 12+ years of industry experience at top tech companies, he makes complex programming concepts simple and practical.",
