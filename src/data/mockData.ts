@@ -127,7 +127,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-6",
     name: "Lisa Chang",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Lisa+Chang&background=f59e0b&color=fff&size=200&bold=true",
     expertise: ["React", "TypeScript", "Web Development"],
     bio: "Staff Engineer at Vercel. React core contributor.",
     longBio: "Lisa Chang is a Staff Engineer at Vercel and a core contributor to the React framework. She brings deep knowledge of modern frontend architecture to her courses, teaching developers how to build production-grade web applications.",
