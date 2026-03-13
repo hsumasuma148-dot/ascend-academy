@@ -264,7 +264,7 @@ export const courses: Course[] = [
     longDescription: "Master data analytics with Python. Learn to clean, transform, visualize, and derive insights from data using industry-standard tools.",
     instructor: "Priya Verma",
     instructorId: "ins-2",
-    instructorAvatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=5",
     instructorBio: "Data Scientist at Google. PhD in Statistics from IIT Delhi.",
     thumbnail: "",
     category: "Data Science",
