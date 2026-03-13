@@ -193,7 +193,16 @@ const CourseDetail = () => {
             <div className="bg-lms-surface rounded-xl p-6">
               <h2 className="text-xl font-bold text-foreground mb-3">Instructor</h2>
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-lg flex-shrink-0">
+                <img
+                  src={course.instructorAvatar}
+                  alt={course.instructor}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-primary/20 flex-shrink-0"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+                <div className="w-14 h-14 rounded-full gradient-primary items-center justify-center text-primary-foreground font-bold text-lg flex-shrink-0 hidden">
                   {course.instructor.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <div>

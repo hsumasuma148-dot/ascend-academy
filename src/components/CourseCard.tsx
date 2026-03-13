@@ -51,7 +51,15 @@ const CourseCard = ({ course }: { course: Course }) => {
           <h3 className="font-bold text-card-foreground text-sm leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {course.title}
           </h3>
-          <p className="text-xs text-muted-foreground mb-3">{course.instructor}</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src={course.instructorAvatar}
+              alt={course.instructor}
+              className="w-5 h-5 rounded-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+            <p className="text-xs text-muted-foreground">{course.instructor}</p>
+          </div>
 
           {/* Rating */}
           <div className="flex items-center gap-1 mb-3">
