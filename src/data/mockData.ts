@@ -139,7 +139,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-7",
     name: "Karan Mehta",
-    avatar: "https://randomuser.me/api/portraits/men/22.jpg",
+    avatar: "https://i.pravatar.cc/150?img=59",
     expertise: ["AWS", "Cloud Computing", "DevOps"],
     bio: "AWS Solutions Architect Professional. Cloud consultant for Fortune 500 companies.",
     longBio: "Karan Mehta is an AWS Solutions Architect Professional and a cloud consultant who has helped Fortune 500 companies migrate to the cloud.",
