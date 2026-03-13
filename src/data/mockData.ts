@@ -91,7 +91,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-3",
     name: "Arjun Patel",
-    avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+    avatar: "https://i.pravatar.cc/150?img=12",
     expertise: ["React", "TypeScript", "Web Development"],
     bio: "Full-stack developer and open-source contributor. 10+ years building modern web apps.",
     longBio: "Arjun Patel is a full-stack developer and open-source contributor with over a decade of experience building scalable web applications using React, Node.js, and TypeScript.",
