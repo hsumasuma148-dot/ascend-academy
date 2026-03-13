@@ -323,7 +323,7 @@ export const courses: Course[] = [
     longDescription: "Master React and TypeScript to build scalable, maintainable web applications. Covers hooks, context, routing, state management, testing, and deployment.",
     instructor: "Arjun Patel",
     instructorId: "ins-3",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/75.jpg",
+    instructorAvatar: "https://i.pravatar.cc/150?img=12",
     instructorBio: "Full-stack developer and open-source contributor. 10+ years building modern web apps.",
     thumbnail: "",
     category: "Web Development",
