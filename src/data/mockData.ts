@@ -79,7 +79,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-2",
     name: "James Rodriguez",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=James+Rodriguez&background=0ea5e9&color=fff&size=200&bold=true",
     expertise: ["SQL", "Database", "Data Engineering"],
     bio: "Senior Database Architect at Amazon. 10+ years of experience in data engineering.",
     longBio: "James Rodriguez is a Senior Database Architect at Amazon with a passion for teaching SQL and data engineering. With over a decade of hands-on experience building scalable data systems, he helps students master databases from fundamentals to advanced optimization techniques.",
