@@ -67,7 +67,7 @@ export const instructors: Instructor[] = [
   {
     id: "ins-1",
     name: "Dr. Sarah Chen",
-    avatar: "",
+    avatar: "https://ui-avatars.com/api/?name=Sarah+Chen&background=6366f1&color=fff&size=200&bold=true",
     expertise: ["Python", "Programming", "OOP"],
     bio: "PhD in Computer Science with 15+ years of teaching experience. Former Google engineer.",
     longBio: "Dr. Sarah Chen holds a PhD in Computer Science from MIT and has spent over 15 years teaching programming at top universities and tech bootcamps. As a former Google engineer, she brings real-world industry experience into her courses, making complex topics accessible and practical.",
