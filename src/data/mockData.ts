@@ -266,7 +266,7 @@ export const courses: Course[] = [
     instructorId: "ins-2",
     instructorAvatar: "https://i.pravatar.cc/150?img=5",
     instructorBio: "Data Scientist at Google. PhD in Statistics from IIT Delhi.",
-    thumbnail: "https://picsum.photos/seed/datascience/400/250",
+    thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop",
     category: "Data Science",
     rating: 4.6,
     reviewCount: 5430,
