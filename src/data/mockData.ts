@@ -325,7 +325,7 @@ export const courses: Course[] = [
     instructorId: "ins-3",
     instructorAvatar: "https://i.pravatar.cc/150?img=12",
     instructorBio: "Full-stack developer and open-source contributor. 10+ years building modern web apps.",
-    thumbnail: "https://picsum.photos/seed/react/400/250",
+    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop",
     category: "Web Development",
     rating: 4.7,
     reviewCount: 7650,
