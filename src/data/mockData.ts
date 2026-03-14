@@ -173,7 +173,7 @@ export const courses: Course[] = [
     instructorId: "ins-1",
     instructorAvatar: "https://i.pravatar.cc/150?img=11",
     instructorBio: "Senior Python developer with 12+ years of experience. Passionate about teaching clean code and software design.",
-    thumbnail: "",
+    thumbnail: "https://picsum.photos/seed/python/400/250",
     category: "Programming",
     rating: 4.8,
     reviewCount: 12450,
