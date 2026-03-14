@@ -355,7 +355,7 @@ export const courses: Course[] = [
     instructorId: "ins-7",
     instructorAvatar: "https://i.pravatar.cc/150?img=59",
     instructorBio: "AWS Solutions Architect Professional. Cloud consultant for Fortune 500 companies.",
-    thumbnail: "",
+    thumbnail: "https://picsum.photos/seed/aws/400/250",
     category: "Cloud Computing",
     rating: 4.5,
     reviewCount: 4320,
