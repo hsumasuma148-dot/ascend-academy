@@ -383,7 +383,7 @@ export const courses: Course[] = [
     instructorId: "ins-8",
     instructorAvatar: "https://i.pravatar.cc/150?img=32",
     instructorBio: "CISSP certified cybersecurity expert and ethical hacking instructor.",
-    thumbnail: "https://picsum.photos/seed/security/400/250",
+    thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop",
     category: "Cybersecurity",
     rating: 4.6,
     reviewCount: 3890,

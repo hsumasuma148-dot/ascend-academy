@@ -25,6 +25,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    toast.success("You have successfully logged out");
     navigate("/");
   };
 
