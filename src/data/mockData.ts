@@ -237,7 +237,7 @@ export const courses: Course[] = [
     instructorId: "ins-5",
     instructorAvatar: "https://i.pravatar.cc/150?img=53",
     instructorBio: "DevOps lead at a major tech company. Kubernetes contributor and conference speaker.",
-    thumbnail: "https://picsum.photos/seed/docker/400/250",
+    thumbnail: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=400&h=250&fit=crop",
     category: "DevOps",
     rating: 4.9,
     reviewCount: 6780,
