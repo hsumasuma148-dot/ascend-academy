@@ -296,7 +296,7 @@ export const courses: Course[] = [
     instructorId: "ins-4",
     instructorAvatar: "https://i.pravatar.cc/150?img=9",
     instructorBio: "AI Research Lead with 50+ published papers on deep learning and neural networks.",
-    thumbnail: "",
+    thumbnail: "https://picsum.photos/seed/deeplearning/400/250",
     category: "AI & ML",
     rating: 4.8,
     reviewCount: 9870,
