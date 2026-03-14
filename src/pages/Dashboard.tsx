@@ -35,7 +35,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-extrabold text-foreground mb-2">My Learning</h1>
+        <h1 className="text-3xl font-extrabold text-foreground mb-2">My Learning{user?.name ? ` — ${user.name}` : ""}</h1>
         <p className="text-muted-foreground mb-8">Track your progress and continue where you left off</p>
 
         {/* Stats */}
