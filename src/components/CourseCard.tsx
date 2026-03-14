@@ -9,38 +9,25 @@ const levelColors: Record<string, string> = {
   Advanced: "bg-accent/10 text-accent",
 };
 
-const categoryColors: Record<string, string> = {
-  Programming: "hsl(264 80% 50%)",
-  "Data Science": "hsl(210 100% 56%)",
-  DevOps: "hsl(142 71% 45%)",
-  "AI & ML": "hsl(350 80% 56%)",
-  "Web Development": "hsl(38 92% 50%)",
-  "Cloud Computing": "hsl(190 80% 45%)",
-  Cybersecurity: "hsl(0 70% 50%)",
-};
-
 const CourseCard = ({ course }: { course: Course }) => {
-  const categoryColor = categoryColors[course.category] || "hsl(264 80% 50%)";
+  const placeholderImg = `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop`;
 
   return (
     <Link to={`/courses/${course.slug}`} className="group block">
       <div className="bg-card rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         {/* Thumbnail */}
-        <div className="relative h-44 overflow-hidden">
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ background: `linear-gradient(135deg, ${categoryColor}, ${categoryColor}dd)` }}
-          >
-            <BookOpen className="h-16 w-16 text-primary-foreground/30" />
-          </div>
-          {course.thumbnail && (
-            <img
-              src={course.thumbnail}
-              alt={course.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-          )}
+        <div className="relative h-44 overflow-hidden bg-muted">
+          <img
+            src={course.thumbnail || placeholderImg}
+            alt={course.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              const img = e.target as HTMLImageElement;
+              if (img.src !== placeholderImg) {
+                img.src = placeholderImg;
+              }
+            }}
+          />
           {course.isBestseller && (
             <Badge className="absolute top-3 left-3 bg-lms-warning text-foreground font-semibold text-xs">
               Bestseller
@@ -87,6 +74,7 @@ const CourseCard = ({ course }: { course: Course }) => {
           <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
             <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{course.duration}</span>
             <span className="flex items-center gap-1"><BookOpen className="h-3 w-3" />{course.lessonCount} lessons</span>
+            <span className="flex items-center gap-1"><Users className="h-3 w-3" />{course.studentCount.toLocaleString()}</span>
           </div>
 
           {/* Price */}

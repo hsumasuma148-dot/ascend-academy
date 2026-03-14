@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { BookOpen, Clock, Award, TrendingUp } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -6,8 +6,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { courses, enrolledCourses } from "@/data/mockData";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {
+  const { isAuthenticated, user } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   const { purchasedCourseIds } = useCart();
 
   // Merge pre-enrolled + purchased courses
@@ -32,7 +35,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-extrabold text-foreground mb-2">My Learning</h1>
+        <h1 className="text-3xl font-extrabold text-foreground mb-2">My Learning{user?.name ? ` — ${user.name}` : ""}</h1>
         <p className="text-muted-foreground mb-8">Track your progress and continue where you left off</p>
 
         {/* Stats */}
