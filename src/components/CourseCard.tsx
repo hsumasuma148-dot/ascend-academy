@@ -33,6 +33,14 @@ const CourseCard = ({ course }: { course: Course }) => {
           >
             <BookOpen className="h-16 w-16 text-primary-foreground/30" />
           </div>
+          {course.thumbnail && (
+            <img
+              src={course.thumbnail}
+              alt={course.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          )}
           {course.isBestseller && (
             <Badge className="absolute top-3 left-3 bg-lms-warning text-foreground font-semibold text-xs">
               Bestseller
