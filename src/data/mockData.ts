@@ -206,7 +206,7 @@ export const courses: Course[] = [
     instructorId: "ins-6",
     instructorAvatar: "https://i.pravatar.cc/150?img=23",
     instructorBio: "Senior Database Architect with 10+ years in data engineering and analytics.",
-    thumbnail: "https://picsum.photos/seed/sql/400/250",
+    thumbnail: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=250&fit=crop",
     category: "Data Science",
     rating: 4.7,
     reviewCount: 8920,
