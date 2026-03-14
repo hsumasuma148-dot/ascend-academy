@@ -74,10 +74,13 @@ const Payment = () => {
             <div className="lg:col-span-2 space-y-4">
               {step === "cart" ? (
                 items.map((course) => (
-                  <div key={course.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
-                      <BookOpen className="h-6 w-6 text-primary-foreground/50" />
-                    </div>
+                    <div key={course.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
+                     <img
+                       src={course.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=80&h=80&fit=crop"}
+                       alt={course.title}
+                       className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                       onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=80&h=80&fit=crop"; }}
+                     />
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground text-sm">{course.title}</h3>
                       <p className="text-xs text-muted-foreground">{course.instructor} · {course.level}</p>
