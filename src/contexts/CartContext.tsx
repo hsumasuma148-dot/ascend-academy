@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Course } from "@/data/mockData";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CartContextType {
   items: Course[];
@@ -16,12 +17,25 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const getUserKey = (userId: string | undefined) => userId ? `lms_purchased_${userId}` : null;
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const [items, setItems] = useState<Course[]>([]);
-  const [purchasedCourseIds, setPurchasedCourseIds] = useState<string[]>(() => {
-    const stored = localStorage.getItem("lms_purchased");
-    return stored ? JSON.parse(stored) : ["1", "3", "5"]; // pre-enrolled courses
-  });
+  const [purchasedCourseIds, setPurchasedCourseIds] = useState<string[]>([]);
+
+  // Load user-specific purchased courses whenever user changes
+  useEffect(() => {
+    const key = getUserKey(user?.id);
+    if (key) {
+      const stored = localStorage.getItem(key);
+      setPurchasedCourseIds(stored ? JSON.parse(stored) : []);
+    } else {
+      // No user logged in — reset
+      setPurchasedCourseIds([]);
+      setItems([]);
+    }
+  }, [user?.id]);
 
   const addToCart = (course: Course) => {
     setItems((prev) => (prev.find((c) => c.id === course.id) ? prev : [...prev, course]));
@@ -38,9 +52,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const total = items.reduce((sum, c) => sum + c.price, 0);
 
   const purchaseCourses = (courseIds: string[]) => {
+    const key = getUserKey(user?.id);
     const updated = [...new Set([...purchasedCourseIds, ...courseIds])];
     setPurchasedCourseIds(updated);
-    localStorage.setItem("lms_purchased", JSON.stringify(updated));
+    if (key) localStorage.setItem(key, JSON.stringify(updated));
   };
 
   const isPurchased = (courseId: string) => purchasedCourseIds.includes(courseId);
