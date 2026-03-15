@@ -17,7 +17,7 @@ const CourseDetail = () => {
   const { addToCart, isInCart, isPurchased } = useCart();
   const enrollment = course ? enrolledCourses.find((e) => e.courseId === course.id) : null;
   const purchased = course ? isPurchased(course.id) : false;
-  const [enrolled, setEnrolled] = useState(purchased || !!enrollment);
+  const enrolled = purchased || !!enrollment;
   const [completedLessons, setCompletedLessons] = useState<string[]>(enrollment?.completedLessons || []);
   const [activeLesson, setActiveLesson] = useState<typeof course extends undefined ? never : NonNullable<typeof course>["lessons"][0] | null>(
     course ? course.lessons[0] : null
