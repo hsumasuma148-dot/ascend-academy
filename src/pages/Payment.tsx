@@ -12,11 +12,12 @@ import { toast } from "sonner";
 
 const Payment = () => {
   const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
   const { items, removeFromCart, clearCart, total, purchaseCourses } = useCart();
   const [step, setStep] = useState<"cart" | "checkout" | "success">(items.length > 0 ? "cart" : "cart");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   const handleCheckout = () => {
     if (items.length === 0) {
