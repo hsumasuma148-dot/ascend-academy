@@ -39,8 +39,8 @@ const Signup = () => {
     const success = await signup(name, email, password, role);
     setLoading(false);
     if (success) {
-      toast.success("Account created! Please log in.");
-      navigate("/login");
+      toast.success("Account created! Welcome to LearnHub!");
+      navigate("/dashboard");
     } else {
       toast.error("Signup failed. Please try again.");
     }

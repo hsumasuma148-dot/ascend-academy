@@ -1,19 +1,23 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ShoppingCart, CreditCard, CheckCircle2, Trash2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
 
 const Payment = () => {
+  const { isAuthenticated } = useAuth();
   const { items, removeFromCart, clearCart, total, purchaseCourses } = useCart();
   const [step, setStep] = useState<"cart" | "checkout" | "success">(items.length > 0 ? "cart" : "cart");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   const handleCheckout = () => {
     if (items.length === 0) {
