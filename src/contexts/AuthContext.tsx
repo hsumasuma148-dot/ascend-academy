@@ -17,6 +17,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Generate a deterministic ID from email so the same email always gets the same userId
+const emailToId = (email: string) => {
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) {
+    hash = ((hash << 5) - hash + email.charCodeAt(i)) | 0;
+  }
+  return "user-" + Math.abs(hash).toString(36);
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem("lms_user");
@@ -24,14 +33,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock auth - accept any valid email/password combo
     if (email && password.length >= 6) {
-      const mockUser: User = {
-        id: crypto.randomUUID(),
-        name: email.split("@")[0],
-        email,
-        role: "student",
-      };
+      const id = emailToId(email);
+      // Check if user previously signed up
+      const storedProfile = localStorage.getItem(`lms_profile_${id}`);
+      const mockUser: User = storedProfile
+        ? JSON.parse(storedProfile)
+        : { id, name: email.split("@")[0], email, role: "student" as const };
       setUser(mockUser);
       localStorage.setItem("lms_user", JSON.stringify(mockUser));
       return true;
@@ -41,14 +49,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (name: string, email: string, password: string, role: "student" | "instructor"): Promise<boolean> => {
     if (name && email && password.length >= 6) {
-      const newUser: User = {
-        id: crypto.randomUUID(),
-        name,
-        email,
-        role,
-      };
+      const id = emailToId(email);
+      const newUser: User = { id, name, email, role };
       setUser(newUser);
       localStorage.setItem("lms_user", JSON.stringify(newUser));
+      localStorage.setItem(`lms_profile_${id}`, JSON.stringify(newUser));
       return true;
     }
     return false;
@@ -57,6 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("lms_user");
+    // Cart context will react to user becoming null and clear its state
   };
 
   return (
