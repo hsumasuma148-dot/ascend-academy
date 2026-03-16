@@ -1,13 +1,17 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, Clock, BookOpen, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart } from "lucide-react";
+import { Star, Clock, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CourseQuizSection from "@/components/CourseQuizSection";
+import CourseCertificate from "@/components/CourseCertificate";
 import { courses, enrolledCourses } from "@/data/mockData";
+import { getQuizForCourse } from "@/data/quizData";
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 
 const CourseDetail = () => {
@@ -15,13 +19,36 @@ const CourseDetail = () => {
   const navigate = useNavigate();
   const course = courses.find((c) => c.slug === slug);
   const { addToCart, isInCart, isPurchased } = useCart();
+  const { user } = useAuth();
   const enrollment = course ? enrolledCourses.find((e) => e.courseId === course.id) : null;
   const purchased = course ? isPurchased(course.id) : false;
   const enrolled = purchased || !!enrollment;
-  const [completedLessons, setCompletedLessons] = useState<string[]>(enrollment?.completedLessons || []);
-  const [activeLesson, setActiveLesson] = useState<typeof course extends undefined ? never : NonNullable<typeof course>["lessons"][0] | null>(
+
+  // Per-user completion state
+  const storageKey = course && user ? `lms_lessons_${user.id}_${course.id}` : null;
+  const quizKey = course && user ? `lms_quiz_${user.id}_${course.id}` : null;
+
+  const [completedLessons, setCompletedLessons] = useState<string[]>(() => {
+    if (storageKey) {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) return JSON.parse(stored);
+    }
+    return enrollment?.completedLessons || [];
+  });
+
+  const [quizPassed, setQuizPassed] = useState(() => {
+    if (quizKey) return localStorage.getItem(quizKey) === "true";
+    return false;
+  });
+
+  const [activeLesson, setActiveLesson] = useState<NonNullable<typeof course>["lessons"][0] | null>(
     course ? course.lessons[0] : null
   );
+
+  // Persist completed lessons
+  useEffect(() => {
+    if (storageKey) localStorage.setItem(storageKey, JSON.stringify(completedLessons));
+  }, [completedLessons, storageKey]);
 
   if (!course) {
     return (
@@ -35,8 +62,10 @@ const CourseDetail = () => {
     );
   }
 
+  const quizQuestions = getQuizForCourse(course.id);
   const progress = enrolled ? Math.round((completedLessons.length / course.lessons.length) * 100) : 0;
-  const isComplete = progress === 100;
+  const allLessonsComplete = completedLessons.length === course.lessons.length;
+  const courseFullyComplete = allLessonsComplete && quizPassed;
 
   const handleBuyNow = () => {
     addToCart(course);
@@ -48,21 +77,32 @@ const CourseDetail = () => {
     toast.success("Added to cart!");
   };
 
-  const toggleLesson = (lessonId: string) => {
+  const markLessonComplete = (lessonId: string) => {
     if (!enrolled) return;
-    setCompletedLessons((prev) =>
-      prev.includes(lessonId) ? prev.filter((id) => id !== lessonId) : [...prev, lessonId]
-    );
+    setCompletedLessons((prev) => {
+      if (prev.includes(lessonId)) return prev;
+      const updated = [...prev, lessonId];
+      toast.success("Lesson marked as completed!");
+      return updated;
+    });
   };
 
-  const canPlayLesson = (lesson: typeof course.lessons[0]) => {
-    return enrolled || lesson.isPreview;
-  };
+  const canPlayLesson = (lesson: typeof course.lessons[0]) => enrolled || lesson.isPreview;
 
   const handleLessonClick = (lesson: typeof course.lessons[0]) => {
-    if (canPlayLesson(lesson)) {
-      setActiveLesson(lesson);
-    }
+    if (canPlayLesson(lesson)) setActiveLesson(lesson);
+  };
+
+  const handleContinueLearning = () => {
+    const nextLesson = course.lessons.find((l) => !completedLessons.includes(l.id));
+    setActiveLesson(nextLesson || course.lessons[0]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleQuizPass = () => {
+    setQuizPassed(true);
+    if (quizKey) localStorage.setItem(quizKey, "true");
+    toast.success("🎉 Course Completed Successfully!");
   };
 
   return (
@@ -112,11 +152,27 @@ const CourseDetail = () => {
                     allowFullScreen
                   />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">
-                    Lesson {activeLesson.order}: {activeLesson.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{activeLesson.duration}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="font-semibold text-foreground">
+                      Lesson {activeLesson.order}: {activeLesson.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{activeLesson.duration}</p>
+                  </div>
+                  {enrolled && !completedLessons.includes(activeLesson.id) && (
+                    <Button
+                      size="sm"
+                      onClick={() => markLessonComplete(activeLesson.id)}
+                      className="bg-lms-success hover:bg-lms-success/90 text-primary-foreground flex-shrink-0"
+                    >
+                      <CheckCircle2 className="h-4 w-4 mr-1" /> Mark as Completed
+                    </Button>
+                  )}
+                  {enrolled && completedLessons.includes(activeLesson.id) && (
+                    <Badge className="bg-lms-success/10 text-lms-success border-none flex-shrink-0">
+                      <CheckCircle2 className="h-3 w-3 mr-1" /> Completed
+                    </Badge>
+                  )}
                 </div>
               </div>
             )}
@@ -124,7 +180,7 @@ const CourseDetail = () => {
             {/* Lessons List */}
             <div>
               <h2 className="text-xl font-bold text-foreground mb-4">
-                Course Content · {course.lessons.length} lessons
+                Course Content · {course.lessons.length} lessons · {completedLessons.length} completed
               </h2>
               <div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
                 {course.lessons.map((lesson) => {
@@ -132,36 +188,62 @@ const CourseDetail = () => {
                   const isActive = activeLesson?.id === lesson.id;
                   const playable = canPlayLesson(lesson);
                   return (
-                    <button
-                      key={lesson.id}
-                      onClick={() => {
-                        handleLessonClick(lesson);
-                        if (enrolled) toggleLesson(lesson.id);
-                      }}
-                      className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-lms-surface ${isCompleted ? "bg-lms-success/5" : ""} ${isActive ? "bg-primary/5 border-l-4 border-l-primary" : ""}`}
-                      disabled={!playable}
-                    >
-                      <div className="flex-shrink-0">
-                        {isCompleted ? (
-                          <CheckCircle2 className="h-5 w-5 text-lms-success" />
-                        ) : playable ? (
-                          <Play className="h-5 w-5 text-primary" />
-                        ) : (
-                          <Lock className="h-5 w-5 text-muted-foreground/40" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-medium ${isCompleted ? "text-lms-success" : isActive ? "text-primary" : "text-foreground"}`}>
-                          {lesson.order}. {lesson.title}
-                        </p>
-                        {lesson.isPreview && !enrolled && <span className="text-xs text-primary">Preview</span>}
-                      </div>
-                      <span className="text-xs text-muted-foreground flex-shrink-0">{lesson.duration}</span>
-                    </button>
+                    <div key={lesson.id} className={`flex items-center gap-3 p-4 transition-colors ${isCompleted ? "bg-lms-success/5" : ""} ${isActive ? "bg-primary/5 border-l-4 border-l-primary" : ""}`}>
+                      <button
+                        onClick={() => handleLessonClick(lesson)}
+                        disabled={!playable}
+                        className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                      >
+                        <div className="flex-shrink-0">
+                          {isCompleted ? (
+                            <CheckCircle2 className="h-5 w-5 text-lms-success" />
+                          ) : playable ? (
+                            <Play className="h-5 w-5 text-primary" />
+                          ) : (
+                            <Lock className="h-5 w-5 text-muted-foreground/40" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium ${isCompleted ? "text-lms-success" : isActive ? "text-primary" : "text-foreground"}`}>
+                            {lesson.order}. {lesson.title}
+                          </p>
+                          {lesson.isPreview && !enrolled && <span className="text-xs text-primary">Preview</span>}
+                        </div>
+                        <span className="text-xs text-muted-foreground flex-shrink-0">{lesson.duration}</span>
+                      </button>
+                      {enrolled && !isCompleted && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => markLessonComplete(lesson.id)}
+                          className="text-xs text-muted-foreground hover:text-lms-success flex-shrink-0"
+                        >
+                          <CheckCircle2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
+
+            {/* Quiz Section - only show when enrolled and all lessons done */}
+            {enrolled && allLessonsComplete && (
+              <CourseQuizSection
+                questions={quizQuestions}
+                onPass={handleQuizPass}
+                passed={quizPassed}
+              />
+            )}
+
+            {/* Certificate */}
+            {enrolled && courseFullyComplete && (
+              <CourseCertificate
+                studentName={user?.name || "Student"}
+                courseName={course.title}
+                instructorName={course.instructor}
+              />
+            )}
 
             {/* About */}
             <div>
@@ -232,18 +314,27 @@ const CourseDetail = () => {
                       <span className="font-semibold text-foreground">{progress}%</span>
                     </div>
                     <Progress value={progress} className="h-2" />
+                    <p className="text-xs text-muted-foreground">
+                      {completedLessons.length}/{course.lessons.length} lessons completed
+                    </p>
                   </div>
-                  {isComplete && (
+
+                  {courseFullyComplete && (
                     <div className="bg-lms-success/10 rounded-lg p-4 text-center">
                       <Award className="h-8 w-8 text-lms-success mx-auto mb-2" />
                       <p className="font-semibold text-lms-success text-sm">Course Completed!</p>
-                      <Button size="sm" className="mt-2 bg-lms-success text-primary-foreground hover:bg-lms-success/90">
-                        Get Certificate
-                      </Button>
+                      <p className="text-xs text-muted-foreground mt-1">Certificate available below</p>
                     </div>
                   )}
-                  <Button onClick={() => setActiveLesson(course.lessons[0])} className="w-full gradient-primary text-primary-foreground font-semibold">
-                    Continue Learning
+
+                  {allLessonsComplete && !quizPassed && (
+                    <div className="bg-lms-warning/10 rounded-lg p-3 text-center">
+                      <p className="text-sm font-medium text-lms-warning">Complete the quiz to get your certificate!</p>
+                    </div>
+                  )}
+
+                  <Button onClick={handleContinueLearning} className="w-full gradient-primary text-primary-foreground font-semibold">
+                    {allLessonsComplete ? "Review Lessons" : "Continue Learning"}
                   </Button>
                 </>
               ) : (
