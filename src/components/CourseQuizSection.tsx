@@ -1,41 +1,60 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
+import { Award, CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 import { QuizQuestion } from "@/data/quizData";
 
 interface Props {
   questions: QuizQuestion[];
   onPass: () => void;
   passed: boolean;
+  onViewCertificate?: () => void;
 }
 
-const CourseQuizSection = ({ questions, onPass, passed }: Props) => {
+const CourseQuizSection = ({ questions, onPass, passed, onViewCertificate }: Props) => {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [lastScore, setLastScore] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const score = submitted
-    ? questions.filter((q) => answers[q.id] === q.correctIndex).length
-    : 0;
+  const score = submitted ? lastScore ?? 0 : 0;
   const passingScore = Math.ceil(questions.length * 0.6);
   const didPass = score >= passingScore;
 
   const handleSubmit = () => {
-    setSubmitted(true);
-    if (score >= passingScore) onPass();
+    if (Object.keys(answers).length < questions.length || isSubmitting) return;
+
+    setIsSubmitting(true);
+    window.setTimeout(() => {
+      const nextScore = questions.filter((q) => answers[q.id] === q.correctIndex).length;
+      setLastScore(nextScore);
+      setSubmitted(true);
+      setIsSubmitting(false);
+
+      if (nextScore >= passingScore) {
+        onPass();
+      }
+    }, 250);
   };
 
   const handleRetry = () => {
     setAnswers({});
     setSubmitted(false);
+    setLastScore(null);
+    setIsSubmitting(false);
   };
 
   if (passed) {
     return (
-      <div className="bg-lms-success/10 border border-lms-success/30 rounded-xl p-6 text-center">
+      <div className="bg-lms-success/10 border border-lms-success/30 rounded-xl p-6 text-center space-y-3">
         <CheckCircle2 className="h-10 w-10 text-lms-success mx-auto mb-2" />
-        <p className="font-bold text-lms-success text-lg">Quiz Passed!</p>
-        <p className="text-sm text-muted-foreground mt-1">You've already passed this quiz.</p>
+        <p className="font-bold text-lms-success text-lg">Quiz Passed Successfully!</p>
+        <p className="text-sm text-muted-foreground">🎉 Congratulations! Your certificate is ready.</p>
+        {onViewCertificate && (
+          <Button onClick={onViewCertificate} className="gradient-primary text-primary-foreground font-semibold">
+            <Award className="h-4 w-4 mr-2" /> View Certificate
+          </Button>
+        )}
       </div>
     );
   }
@@ -121,9 +140,11 @@ const CourseQuizSection = ({ questions, onPass, passed }: Props) => {
         <Button
           onClick={handleSubmit}
           className="w-full gradient-primary text-primary-foreground font-semibold py-6"
-          disabled={Object.keys(answers).length < questions.length}
+          disabled={Object.keys(answers).length < questions.length || isSubmitting}
         >
-          Submit Quiz ({Object.keys(answers).length}/{questions.length} answered)
+          {isSubmitting
+            ? "Submitting Quiz..."
+            : `Submit Quiz (${Object.keys(answers).length}/${questions.length} answered)`}
         </Button>
       )}
     </div>
