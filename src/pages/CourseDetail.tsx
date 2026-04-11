@@ -229,11 +229,13 @@ const CourseDetail = () => {
 
             {/* Quiz Section - only show when enrolled and all lessons done */}
             {enrolled && allLessonsComplete && (
-              <CourseQuizSection
-                questions={quizQuestions}
-                onPass={handleQuizPass}
-                passed={quizPassed}
-              />
+              <div id="quiz-section">
+                <CourseQuizSection
+                  questions={quizQuestions}
+                  onPass={handleQuizPass}
+                  passed={quizPassed}
+                />
+              </div>
             )}
 
             {/* Certificate */}
