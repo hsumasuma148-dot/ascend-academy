@@ -14,6 +14,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 
+interface StoredCertificate {
+  courseId: string;
+  userId: string;
+  studentName: string;
+  courseName: string;
+  instructorName: string;
+  completionDate: string;
+}
+
 const CourseDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -27,23 +36,98 @@ const CourseDetail = () => {
   // Per-user completion state
   const storageKey = course && user ? `lms_lessons_${user.id}_${course.id}` : null;
   const quizKey = course && user ? `lms_quiz_${user.id}_${course.id}` : null;
+  const certificateKey = course && user ? `lms_certificate_${user.id}_${course.id}` : null;
 
-  const [completedLessons, setCompletedLessons] = useState<string[]>(() => {
-    if (storageKey) {
-      const stored = localStorage.getItem(storageKey);
-      if (stored) return JSON.parse(stored);
-    }
-    return enrollment?.completedLessons || [];
-  });
-
-  const [quizPassed, setQuizPassed] = useState(() => {
-    if (quizKey) return localStorage.getItem(quizKey) === "true";
-    return false;
-  });
+  const [completedLessons, setCompletedLessons] = useState<string[]>(enrollment?.completedLessons || []);
+  const [quizPassed, setQuizPassed] = useState(false);
+  const [certificate, setCertificate] = useState<StoredCertificate | null>(null);
+  const [isUnlockingCertificate, setIsUnlockingCertificate] = useState(false);
 
   const [activeLesson, setActiveLesson] = useState<NonNullable<typeof course>["lessons"][0] | null>(
     course ? course.lessons[0] : null
   );
+
+  useEffect(() => {
+    if (storageKey) {
+      const storedLessons = localStorage.getItem(storageKey);
+      setCompletedLessons(storedLessons ? JSON.parse(storedLessons) : enrollment?.completedLessons || []);
+      return;
+    }
+
+    setCompletedLessons(enrollment?.completedLessons || []);
+  }, [enrollment, storageKey]);
+
+  useEffect(() => {
+    const storedQuizPassed = quizKey ? localStorage.getItem(quizKey) === "true" : false;
+
+    if (!certificateKey) {
+      setCertificate(null);
+      setQuizPassed(storedQuizPassed);
+      return;
+    }
+
+    const storedCertificate = localStorage.getItem(certificateKey);
+
+    if (!storedCertificate) {
+      setCertificate(null);
+      setQuizPassed(storedQuizPassed);
+      return;
+    }
+
+    try {
+      const parsedCertificate = JSON.parse(storedCertificate) as StoredCertificate;
+      setCertificate(parsedCertificate);
+      setQuizPassed(true);
+    } catch {
+      localStorage.removeItem(certificateKey);
+      setCertificate(null);
+      setQuizPassed(storedQuizPassed);
+    }
+  }, [certificateKey, quizKey]);
+
+  const scrollToCertificate = useCallback(() => {
+    document.getElementById("certificate-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const createCertificateRecord = useCallback((): StoredCertificate | null => {
+    if (!course || !user) return null;
+    if (certificate) return certificate;
+
+    const nextCertificate: StoredCertificate = {
+      courseId: course.id,
+      userId: user.id,
+      studentName: user.name || "Student",
+      courseName: course.title,
+      instructorName: course.instructor,
+      completionDate: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+    };
+
+    if (certificateKey) {
+      localStorage.setItem(certificateKey, JSON.stringify(nextCertificate));
+    }
+
+    return nextCertificate;
+  }, [certificate, certificateKey, course, user]);
+
+  const handleQuizPass = () => {
+    setIsUnlockingCertificate(true);
+
+    window.setTimeout(() => {
+      setQuizPassed(true);
+      if (quizKey) localStorage.setItem(quizKey, "true");
+
+      const readyCertificate = createCertificateRecord();
+      if (readyCertificate) setCertificate(readyCertificate);
+
+      setIsUnlockingCertificate(false);
+      toast.success("🎉 Congratulations! Your certificate is ready.");
+      scrollToCertificate();
+    }, 250);
+  };
 
   // Persist completed lessons
   useEffect(() => {
@@ -65,7 +149,7 @@ const CourseDetail = () => {
   const quizQuestions = getQuizForCourse(course.id);
   const progress = enrolled ? Math.round((completedLessons.length / course.lessons.length) * 100) : 0;
   const allLessonsComplete = completedLessons.length === course.lessons.length;
-  const courseFullyComplete = allLessonsComplete && quizPassed;
+  const courseFullyComplete = allLessonsComplete && (quizPassed || !!certificate);
 
   const handleBuyNow = () => {
     addToCart(course);
@@ -97,12 +181,6 @@ const CourseDetail = () => {
     const nextLesson = course.lessons.find((l) => !completedLessons.includes(l.id));
     setActiveLesson(nextLesson || course.lessons[0]);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleQuizPass = () => {
-    setQuizPassed(true);
-    if (quizKey) localStorage.setItem(quizKey, "true");
-    toast.success("🎉 Course Completed Successfully!");
   };
 
   return (
@@ -229,22 +307,32 @@ const CourseDetail = () => {
 
             {/* Quiz Section - only show when enrolled and all lessons done */}
             {enrolled && allLessonsComplete && (
-              <div id="quiz-section">
+              <div id="quiz-section" className="space-y-4">
+                <div className="bg-card border border-border rounded-xl p-5">
+                  <h2 className="text-xl font-bold text-foreground">Final Quiz</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Pass this quiz with at least 60% to unlock your certificate.
+                  </p>
+                </div>
                 <CourseQuizSection
                   questions={quizQuestions}
                   onPass={handleQuizPass}
                   passed={quizPassed}
+                  onViewCertificate={scrollToCertificate}
                 />
               </div>
             )}
 
             {/* Certificate */}
-            {enrolled && courseFullyComplete && (
-              <CourseCertificate
-                studentName={user?.name || "Student"}
-                courseName={course.title}
-                instructorName={course.instructor}
-              />
+            {enrolled && courseFullyComplete && certificate && (
+              <div id="certificate-section">
+                <CourseCertificate
+                  studentName={certificate.studentName}
+                  courseName={certificate.courseName}
+                  instructorName={certificate.instructorName}
+                  completionDate={certificate.completionDate}
+                />
+              </div>
             )}
 
             {/* About */}
@@ -325,7 +413,22 @@ const CourseDetail = () => {
                     <div className="bg-lms-success/10 rounded-lg p-4 text-center">
                       <Award className="h-8 w-8 text-lms-success mx-auto mb-2" />
                       <p className="font-semibold text-lms-success text-sm">Course Completed!</p>
-                      <p className="text-xs text-muted-foreground mt-1">Certificate available below</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {certificate ? `Certificate ready · ${certificate.completionDate}` : "Certificate available below"}
+                      </p>
+                      <Button
+                        size="sm"
+                        className="mt-3 bg-lms-success hover:bg-lms-success/90 text-primary-foreground font-semibold"
+                        onClick={scrollToCertificate}
+                      >
+                        Download Certificate
+                      </Button>
+                    </div>
+                  )}
+
+                  {isUnlockingCertificate && (
+                    <div className="bg-primary/5 rounded-lg p-3 text-center">
+                      <p className="text-sm font-medium text-foreground">Preparing your certificate...</p>
                     </div>
                   )}
 

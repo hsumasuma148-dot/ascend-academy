@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Award, Download } from "lucide-react";
 
@@ -5,10 +6,13 @@ interface Props {
   studentName: string;
   courseName: string;
   instructorName: string;
+  completionDate: string;
 }
 
-const CourseCertificate = ({ studentName, courseName, instructorName }: Props) => {
-  const handleDownload = () => {
+const CourseCertificate = ({ studentName, courseName, instructorName, completionDate }: Props) => {
+  const [certificateUrl, setCertificateUrl] = useState("");
+
+  const generateCertificate = useCallback(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1200;
     canvas.height = 850;
@@ -83,7 +87,7 @@ const CourseCertificate = ({ studentName, courseName, instructorName }: Props) =
     ctx.fillStyle = "#64748b";
     ctx.font = "16px Arial, sans-serif";
     ctx.fillText(`Instructor: ${instructorName}`, 350, footerY);
-    ctx.fillText(`Date: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`, 850, footerY);
+    ctx.fillText(`Date: ${completionDate}`, 850, footerY);
 
     ctx.fillStyle = "#6366f1";
     ctx.fillRect(220, footerY - 20, 260, 1);
@@ -96,21 +100,46 @@ const CourseCertificate = ({ studentName, courseName, instructorName }: Props) =
     ctx.fillStyle = "#6366f1";
     ctx.fillRect(100, 770, 1000, 4);
 
+    return canvas.toDataURL("image/png");
+  }, [completionDate, courseName, instructorName, studentName]);
+
+  useEffect(() => {
+    setCertificateUrl(generateCertificate());
+  }, [generateCertificate]);
+
+  const handleDownload = () => {
+    const readyUrl = certificateUrl || generateCertificate();
+
     // Download
     const link = document.createElement("a");
     link.download = `${courseName.replace(/[^a-zA-Z0-9]/g, "_")}_Certificate.png`;
-    link.href = canvas.toDataURL("image/png");
+    link.href = readyUrl;
     link.click();
   };
 
   return (
-    <div className="bg-lms-success/10 border border-lms-success/30 rounded-xl p-6 text-center space-y-3">
+    <div className="bg-lms-success/10 border border-lms-success/30 rounded-xl p-6 text-center space-y-4">
       <Award className="h-12 w-12 text-lms-success mx-auto" />
       <p className="font-bold text-lms-success text-lg">🎉 Course Completed Successfully!</p>
       <p className="text-sm text-muted-foreground">
         Congratulations, {studentName}! You've finished all lessons and passed the quiz.
       </p>
-      <Button onClick={handleDownload} className="bg-lms-success hover:bg-lms-success/90 text-primary-foreground font-semibold">
+      <p className="text-xs text-muted-foreground">Issued on {completionDate}</p>
+
+      <div className="rounded-xl overflow-hidden border border-border bg-background">
+        {certificateUrl ? (
+          <img
+            src={certificateUrl}
+            alt={`${studentName}'s certificate for ${courseName}`}
+            className="w-full h-auto"
+            loading="lazy"
+          />
+        ) : (
+          <div className="py-10 px-4 text-sm text-muted-foreground">Preparing your certificate...</div>
+        )}
+      </div>
+
+      <Button onClick={handleDownload} className="bg-lms-success hover:bg-lms-success/90 text-primary-foreground font-semibold" disabled={!certificateUrl}>
         <Download className="h-4 w-4 mr-2" /> Download Certificate
       </Button>
     </div>
