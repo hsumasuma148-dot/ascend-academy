@@ -328,8 +328,15 @@ const CourseDetail = () => {
                   )}
 
                   {allLessonsComplete && !quizPassed && (
-                    <div className="bg-lms-warning/10 rounded-lg p-3 text-center">
+                    <div className="bg-lms-warning/10 rounded-lg p-3 text-center space-y-2">
                       <p className="text-sm font-medium text-lms-warning">Complete the quiz to get your certificate!</p>
+                      <Button
+                        size="sm"
+                        className="bg-lms-warning hover:bg-lms-warning/90 text-foreground font-semibold"
+                        onClick={() => document.getElementById("quiz-section")?.scrollIntoView({ behavior: "smooth" })}
+                      >
+                        📝 Take Quiz Now
+                      </Button>
                     </div>
                   )}
 
