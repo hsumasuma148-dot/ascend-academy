@@ -85,6 +85,50 @@ const CourseDetail = () => {
     }
   }, [certificateKey, quizKey]);
 
+  const scrollToCertificate = useCallback(() => {
+    document.getElementById("certificate-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const createCertificateRecord = useCallback((): StoredCertificate | null => {
+    if (!course || !user) return null;
+    if (certificate) return certificate;
+
+    const nextCertificate: StoredCertificate = {
+      courseId: course.id,
+      userId: user.id,
+      studentName: user.name || "Student",
+      courseName: course.title,
+      instructorName: course.instructor,
+      completionDate: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+    };
+
+    if (certificateKey) {
+      localStorage.setItem(certificateKey, JSON.stringify(nextCertificate));
+    }
+
+    return nextCertificate;
+  }, [certificate, certificateKey, course, user]);
+
+  const handleQuizPass = () => {
+    setIsUnlockingCertificate(true);
+
+    window.setTimeout(() => {
+      setQuizPassed(true);
+      if (quizKey) localStorage.setItem(quizKey, "true");
+
+      const readyCertificate = createCertificateRecord();
+      if (readyCertificate) setCertificate(readyCertificate);
+
+      setIsUnlockingCertificate(false);
+      toast.success("🎉 Congratulations! Your certificate is ready.");
+      scrollToCertificate();
+    }, 250);
+  };
+
   // Persist completed lessons
   useEffect(() => {
     if (storageKey) localStorage.setItem(storageKey, JSON.stringify(completedLessons));
@@ -137,50 +181,6 @@ const CourseDetail = () => {
     const nextLesson = course.lessons.find((l) => !completedLessons.includes(l.id));
     setActiveLesson(nextLesson || course.lessons[0]);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const scrollToCertificate = useCallback(() => {
-    document.getElementById("certificate-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
-
-  const createCertificateRecord = useCallback((): StoredCertificate | null => {
-    if (!course || !user) return null;
-    if (certificate) return certificate;
-
-    const nextCertificate: StoredCertificate = {
-      courseId: course.id,
-      userId: user.id,
-      studentName: user.name || "Student",
-      courseName: course.title,
-      instructorName: course.instructor,
-      completionDate: new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-    };
-
-    if (certificateKey) {
-      localStorage.setItem(certificateKey, JSON.stringify(nextCertificate));
-    }
-
-    return nextCertificate;
-  }, [certificate, certificateKey, course, user]);
-
-  const handleQuizPass = () => {
-    setIsUnlockingCertificate(true);
-
-    window.setTimeout(() => {
-      setQuizPassed(true);
-      if (quizKey) localStorage.setItem(quizKey, "true");
-
-      const readyCertificate = createCertificateRecord();
-      if (readyCertificate) setCertificate(readyCertificate);
-
-      setIsUnlockingCertificate(false);
-      toast.success("🎉 Congratulations! Your certificate is ready.");
-      scrollToCertificate();
-    }, 250);
   };
 
   return (
