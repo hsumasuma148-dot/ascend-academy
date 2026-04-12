@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { stats } from "@/data/mockData";
 import { useState } from "react";
+import heroIllustration from "@/assets/hero-illustration.png";
 
 const iconMap: Record<string, React.ReactNode> = {
   Students: <Users className="h-5 w-5" />,
@@ -25,79 +26,98 @@ const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 gradient-hero" />
-      {/* Decorative blobs */}
       <div className="absolute top-10 right-10 w-72 h-72 bg-primary-foreground/5 rounded-full blur-3xl" />
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-primary-foreground/5 rounded-full blur-3xl" />
 
-      <div className="container relative mx-auto px-4 py-20 md:py-32">
-        <div className="max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium mb-6 backdrop-blur-sm">
-              🎓 Start learning today — 85% off select courses
-            </span>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-primary-foreground leading-[1.1] mb-6">
-              Learn Skills for{" "}
-              <span className="font-display italic">Your Future</span>
-            </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 leading-relaxed max-w-2xl">
-              Access 500+ expert-led courses in tech, data science, and more.
-              Build real skills with hands-on projects and earn certificates.
-            </p>
-          </motion.div>
-
-          {/* Search Bar */}
-          <motion.form
-            onSubmit={handleSearch}
-            className="flex gap-2 max-w-xl mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="What do you want to learn?"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-12 h-14 text-base bg-primary-foreground/95 border-none text-foreground placeholder:text-muted-foreground/70 rounded-xl shadow-lg focus-visible:ring-2 focus-visible:ring-primary-foreground/40"
-              />
-            </div>
-            <Button
-              type="submit"
-              size="lg"
-              className="h-14 px-8 bg-primary-foreground text-foreground font-bold hover:bg-primary-foreground/90 rounded-xl shadow-lg"
+      <div className="container relative mx-auto px-4 py-20 md:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left: Text Content */}
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              Search
-            </Button>
-          </motion.form>
+              <span className="inline-block px-4 py-1.5 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium mb-6 backdrop-blur-sm">
+                🎓 Start learning today — 85% off select courses
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-[1.1] mb-6">
+                Learn Skills for{" "}
+                <span className="font-display italic">Your Future</span>
+              </h1>
+              <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 leading-relaxed max-w-2xl">
+                Access 500+ expert-led courses in tech, data science, and more.
+                Build real skills with hands-on projects and earn certificates.
+              </p>
+            </motion.div>
 
+            <motion.form
+              onSubmit={handleSearch}
+              className="flex gap-2 max-w-xl mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+            >
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="What do you want to learn?"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-12 h-14 text-base bg-primary-foreground/95 border-none text-foreground placeholder:text-muted-foreground/70 rounded-xl shadow-lg focus-visible:ring-2 focus-visible:ring-primary-foreground/40"
+                />
+              </div>
+              <Button
+                type="submit"
+                size="lg"
+                className="h-14 px-8 bg-primary-foreground text-foreground font-bold hover:bg-primary-foreground/90 rounded-xl shadow-lg"
+              >
+                Search
+              </Button>
+            </motion.form>
+
+            <motion.div
+              className="flex flex-wrap gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Link to="/courses">
+                <Button
+                  size="lg"
+                  className="bg-primary-foreground text-foreground font-bold hover:bg-primary-foreground/90 shadow-lg text-base px-8"
+                >
+                  Explore Courses
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/mentors">
+                <Button
+                  size="lg"
+                  className="bg-[hsl(270,60%,25%)] text-primary-foreground font-bold hover:bg-[hsl(270,60%,20%)] hover:-translate-y-0.5 shadow-lg hover:shadow-xl transition-all duration-300 ease-out text-base px-8"
+                >
+                  Meet Our Mentors
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Right: Illustration */}
           <motion.div
-            className="flex flex-wrap gap-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex justify-center lg:justify-end"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Link to="/courses">
-              <Button
-                size="lg"
-                className="bg-primary-foreground text-foreground font-bold hover:bg-primary-foreground/90 shadow-lg text-base px-8"
-              >
-                Explore Courses
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/mentors">
-              <Button
-                size="lg"
-                className="bg-[hsl(270,60%,25%)] text-primary-foreground font-bold hover:bg-[hsl(270,60%,20%)] hover:-translate-y-0.5 shadow-lg hover:shadow-xl transition-all duration-300 ease-out text-base px-8"
-              >
-                Meet Our Mentors
-              </Button>
-            </Link>
+            <motion.img
+              src={heroIllustration}
+              alt="Students learning online with laptops and books"
+              width={1024}
+              height={1024}
+              className="w-full max-w-md lg:max-w-lg xl:max-w-xl drop-shadow-2xl"
+              animate={{ y: [0, -12, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
           </motion.div>
         </div>
 
