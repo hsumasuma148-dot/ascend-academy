@@ -93,8 +93,7 @@ const HeroSection = () => {
             <Link to="/mentors">
               <Button
                 size="lg"
-                variant="outline"
-                className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 text-base px-8"
+                className="bg-[hsl(270,60%,25%)] text-primary-foreground font-bold hover:bg-[hsl(270,60%,20%)] hover:-translate-y-0.5 shadow-lg hover:shadow-xl transition-all duration-300 ease-out text-base px-8"
               >
                 Meet Our Mentors
               </Button>
