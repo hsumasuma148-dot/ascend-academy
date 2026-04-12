@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Star, Upload, Cpu, Monitor } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
@@ -10,13 +10,28 @@ import CategoryFilter from "@/components/CategoryFilter";
 import Footer from "@/components/Footer";
 import { courses, instructors } from "@/data/mockData";
 
+const aiSteps = [
+  {
+    icon: Upload,
+    title: "User Input",
+    description: "Enter text, upload an image, or provide data to the AI model.",
+  },
+  {
+    icon: Cpu,
+    title: "AI Model Processing",
+    description: "The model analyzes your input using deep learning algorithms.",
+  },
+  {
+    icon: Monitor,
+    title: "Output Display",
+    description: "Results are rendered instantly — text, visuals, or predictions.",
+  },
+];
+
 const Index = () => {
   const [category, setCategory] = useState("All");
   const filtered = category === "All" ? courses : courses.filter((c) => c.category === category);
-
-  // Show top 8
   const displayCourses = filtered.slice(0, 8);
-  // Top 4 mentors
   const topMentors = instructors.slice(0, 4);
 
   return (
@@ -63,6 +78,79 @@ const Index = () => {
             </Link>
           </div>
         )}
+      </section>
+
+      {/* How AI Works */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl font-extrabold text-foreground mb-3">How AI Works</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+              Experience AI in action — see how a Hugging Face model takes your input, processes it, and delivers results in real time.
+            </p>
+          </motion.div>
+
+          {/* Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+            {aiSteps.map((step, i) => (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className="relative"
+              >
+                <div className="bg-card border border-border rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full">
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <step.icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <span className="text-xs font-bold text-primary/60 uppercase tracking-wider">Step {i + 1}</span>
+                  <h3 className="font-bold text-foreground text-lg mt-1 mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                </div>
+                {i < 2 && (
+                  <div className="hidden md:flex absolute top-1/2 -right-3 -translate-y-1/2 z-10">
+                    <ArrowRight className="h-6 w-6 text-primary/40" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Live Demo */}
+          <motion.div
+            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-lg">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+                <div className="flex gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-destructive/60" />
+                  <span className="w-3 h-3 rounded-full bg-yellow-400/60" />
+                  <span className="w-3 h-3 rounded-full bg-green-400/60" />
+                </div>
+                <span className="text-sm font-medium text-muted-foreground ml-2">Live AI Demo — Hugging Face Space</span>
+              </div>
+              <iframe
+                src="https://hadapadasuma-547-876.hf.space"
+                title="AI Demo - Hugging Face Space"
+                className="w-full border-0"
+                style={{ height: "500px" }}
+                allow="microphone; camera"
+                loading="lazy"
+              />
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Top Mentors */}
