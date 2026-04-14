@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, Clock, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart } from "lucide-react";
+import { Star, Clock, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart, Bot } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -42,6 +43,7 @@ const CourseDetail = () => {
   const [quizPassed, setQuizPassed] = useState(false);
   const [certificate, setCertificate] = useState<StoredCertificate | null>(null);
   const [isUnlockingCertificate, setIsUnlockingCertificate] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const [activeLesson, setActiveLesson] = useState<NonNullable<typeof course>["lessons"][0] | null>(
     course ? course.lessons[0] : null
@@ -124,8 +126,12 @@ const CourseDetail = () => {
       if (readyCertificate) setCertificate(readyCertificate);
 
       setIsUnlockingCertificate(false);
+      setShowCelebration(true);
       toast.success("🎉 Congratulations! Your certificate is ready.");
       scrollToCertificate();
+
+      // Hide celebration after 5 seconds
+      setTimeout(() => setShowCelebration(false), 5000);
     }, 250);
   };
 
