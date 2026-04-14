@@ -526,6 +526,15 @@ const CourseDetail = () => {
                 <div className="flex justify-between"><span>Instructor</span><span className="font-medium text-foreground">{course.instructor}</span></div>
                 <div className="flex justify-between"><span>Certificate</span><span className="font-medium text-foreground">Yes</span></div>
               </div>
+
+              {/* AI Tool Suggestion */}
+              <Link to={aiSuggestion.link} className="block mt-4 bg-primary/5 border border-primary/20 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                <div className="flex items-center gap-2 mb-1">
+                  <Bot className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">Try {aiSuggestion.tool}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Use AI tools to boost your learning in this course →</p>
+              </Link>
             </div>
           </div>
         </div>
