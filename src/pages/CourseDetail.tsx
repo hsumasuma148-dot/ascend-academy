@@ -189,8 +189,59 @@ const CourseDetail = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // AI tool suggestion based on course category
+  const getAiToolSuggestion = () => {
+    const cat = course.category.toLowerCase();
+    if (cat.includes("programming") || cat.includes("web") || cat.includes("mobile")) return { tool: "Code Assistant", link: "/ai-lab" };
+    if (cat.includes("ai") || cat.includes("ml") || cat.includes("data")) return { tool: "Text Generator", link: "/ai-lab" };
+    return { tool: "AI Chatbot", link: "/ai-lab" };
+  };
+  const aiSuggestion = getAiToolSuggestion();
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Celebration Overlay */}
+      <AnimatePresence>
+        {showCelebration && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm"
+            onClick={() => setShowCelebration(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: "spring", damping: 15 }}
+              className="bg-card rounded-3xl p-10 text-center max-w-md mx-4 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <motion.div
+                animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.6 }}
+                className="text-6xl mb-4"
+              >
+                🎉
+              </motion.div>
+              <h2 className="text-2xl font-extrabold text-foreground mb-2">Course Completed Successfully!</h2>
+              <p className="text-muted-foreground mb-6">
+                Congratulations, {user?.name}! You've completed all lessons and passed the quiz. Your certificate is ready!
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button onClick={() => { setShowCelebration(false); scrollToCertificate(); }} className="gradient-primary text-primary-foreground font-semibold">
+                  View Certificate
+                </Button>
+                <Link to="/dashboard">
+                  <Button variant="outline">My Learning</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Navbar />
 
       {/* Header */}
