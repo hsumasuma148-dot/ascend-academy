@@ -20,6 +20,7 @@ const Navbar = () => {
     { to: "/", label: "Home" },
     { to: "/courses", label: "Courses" },
     { to: "/mentors", label: "Mentors" },
+    { to: "/ai-lab", label: "AI Lab" },
     { to: "/dashboard", label: "My Learning" },
     { to: "/instructor", label: "Teach" },
   ];

@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, Clock, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart } from "lucide-react";
+import { Star, Clock, Users, Award, Play, Lock, CheckCircle2, ArrowLeft, ShoppingCart, Bot } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -42,6 +43,7 @@ const CourseDetail = () => {
   const [quizPassed, setQuizPassed] = useState(false);
   const [certificate, setCertificate] = useState<StoredCertificate | null>(null);
   const [isUnlockingCertificate, setIsUnlockingCertificate] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const [activeLesson, setActiveLesson] = useState<NonNullable<typeof course>["lessons"][0] | null>(
     course ? course.lessons[0] : null
@@ -124,8 +126,12 @@ const CourseDetail = () => {
       if (readyCertificate) setCertificate(readyCertificate);
 
       setIsUnlockingCertificate(false);
+      setShowCelebration(true);
       toast.success("🎉 Congratulations! Your certificate is ready.");
       scrollToCertificate();
+
+      // Hide celebration after 5 seconds
+      setTimeout(() => setShowCelebration(false), 5000);
     }, 250);
   };
 
@@ -183,8 +189,59 @@ const CourseDetail = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // AI tool suggestion based on course category
+  const getAiToolSuggestion = () => {
+    const cat = course.category.toLowerCase();
+    if (cat.includes("programming") || cat.includes("web") || cat.includes("mobile")) return { tool: "Code Assistant", link: "/ai-lab" };
+    if (cat.includes("ai") || cat.includes("ml") || cat.includes("data")) return { tool: "Text Generator", link: "/ai-lab" };
+    return { tool: "AI Chatbot", link: "/ai-lab" };
+  };
+  const aiSuggestion = getAiToolSuggestion();
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Celebration Overlay */}
+      <AnimatePresence>
+        {showCelebration && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm"
+            onClick={() => setShowCelebration(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: "spring", damping: 15 }}
+              className="bg-card rounded-3xl p-10 text-center max-w-md mx-4 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <motion.div
+                animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.6 }}
+                className="text-6xl mb-4"
+              >
+                🎉
+              </motion.div>
+              <h2 className="text-2xl font-extrabold text-foreground mb-2">Course Completed Successfully!</h2>
+              <p className="text-muted-foreground mb-6">
+                Congratulations, {user?.name}! You've completed all lessons and passed the quiz. Your certificate is ready!
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button onClick={() => { setShowCelebration(false); scrollToCertificate(); }} className="gradient-primary text-primary-foreground font-semibold">
+                  View Certificate
+                </Button>
+                <Link to="/dashboard">
+                  <Button variant="outline">My Learning</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Navbar />
 
       {/* Header */}
@@ -469,6 +526,15 @@ const CourseDetail = () => {
                 <div className="flex justify-between"><span>Instructor</span><span className="font-medium text-foreground">{course.instructor}</span></div>
                 <div className="flex justify-between"><span>Certificate</span><span className="font-medium text-foreground">Yes</span></div>
               </div>
+
+              {/* AI Tool Suggestion */}
+              <Link to={aiSuggestion.link} className="block mt-4 bg-primary/5 border border-primary/20 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+                <div className="flex items-center gap-2 mb-1">
+                  <Bot className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">Try {aiSuggestion.tool}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Use AI tools to boost your learning in this course →</p>
+              </Link>
             </div>
           </div>
         </div>
