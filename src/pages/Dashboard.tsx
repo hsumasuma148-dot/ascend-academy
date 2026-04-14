@@ -22,10 +22,27 @@ const Dashboard = () => {
       const course = courses.find((c) => c.id === id);
       if (!course) return null;
       const ec = enrolledCourses.find((e) => e.courseId === id);
+
+      // Read localStorage-aware completed lessons
+      const storageKey = user ? `lms_lessons_${user.id}_${id}` : null;
+      let completedLessons: string[] = ec?.completedLessons ?? [];
+      if (storageKey) {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+          try {
+            completedLessons = JSON.parse(stored);
+          } catch { /* use default */ }
+        }
+      }
+
+      const progress = course.lessons.length > 0
+        ? Math.round((completedLessons.length / course.lessons.length) * 100)
+        : ec?.progress ?? 0;
+
       return {
         course,
-        progress: ec?.progress ?? 0,
-        completedLessons: ec?.completedLessons ?? [],
+        progress,
+        completedLessons,
         enrolledAt: ec?.enrolledAt ?? new Date().toISOString().split("T")[0],
       };
     })
