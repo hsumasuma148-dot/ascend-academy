@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Payment from "./pages/Payment";
 import Mentors from "./pages/Mentors";
+import AILab from "./pages/AILab";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/signup" element={<Signup />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/mentors" element={<Mentors />} />
+              <Route path="/ai-lab" element={<AILab />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <AIChatAssistant />
