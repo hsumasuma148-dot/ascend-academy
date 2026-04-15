@@ -99,6 +99,29 @@ const HeroSection = () => {
                   Meet Our Mentors
                 </Button>
               </Link>
+              <Button
+                size="lg"
+                className="bg-primary-foreground/20 text-primary-foreground font-bold hover:bg-primary-foreground/30 border border-primary-foreground/30 shadow-lg text-base px-8"
+                onClick={() => {
+                  const searchInput = document.querySelector<HTMLInputElement>('input[placeholder="What do you want to learn?"]');
+                  if (searchInput?.value.trim()) {
+                    window.location.href = `/courses?q=${encodeURIComponent(searchInput.value.trim())}`;
+                  }
+                }}
+              >
+                Select
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/40 text-primary-foreground font-bold hover:bg-primary-foreground/10 shadow-lg text-base px-8"
+                onClick={() => {
+                  setSearch("");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
+                Restart
+              </Button>
             </motion.div>
           </div>
 
