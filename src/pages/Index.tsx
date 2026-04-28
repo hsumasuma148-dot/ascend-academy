@@ -123,33 +123,6 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Live Demo */}
-          <motion.div
-            className="max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-lg">
-              <div className="px-6 py-4 border-b border-border flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-destructive/60" />
-                  <span className="w-3 h-3 rounded-full bg-yellow-400/60" />
-                  <span className="w-3 h-3 rounded-full bg-green-400/60" />
-                </div>
-                <span className="text-sm font-medium text-muted-foreground ml-2">Live AI Demo — Hugging Face Space</span>
-              </div>
-              <iframe
-                src="https://hadapadasuma-547-876.hf.space"
-                title="AI Demo - Hugging Face Space"
-                className="w-full border-0"
-                style={{ height: "500px" }}
-                allow="microphone; camera"
-                loading="lazy"
-              />
-            </div>
-          </motion.div>
         </div>
       </section>
 
