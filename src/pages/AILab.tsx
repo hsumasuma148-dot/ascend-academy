@@ -64,12 +64,14 @@ const aiTools: ToolConfig[] = [
 const AIToolPanel = ({ tool }: { tool: ToolConfig }) => {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   const handleRun = async () => {
     if (!input.trim()) return;
     setLoading(true);
     setOutput("");
+    setImageUrl("");
     try {
       const { data, error } = await supabase.functions.invoke("ai-tool", {
         body: { tool: tool.id, prompt: input },
@@ -77,6 +79,7 @@ const AIToolPanel = ({ tool }: { tool: ToolConfig }) => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setOutput(data?.output ?? "No response generated.");
+      if (data?.imageUrl) setImageUrl(data.imageUrl);
     } catch (e: any) {
       const msg = e?.message ?? "Failed to generate response";
       toast({ title: "AI error", description: msg, variant: "destructive" });
@@ -156,7 +159,7 @@ const AIToolPanel = ({ tool }: { tool: ToolConfig }) => {
       </Button>
 
       {/* Output */}
-      {(output || loading) && (
+      {(output || loading || imageUrl) && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -168,7 +171,14 @@ const AIToolPanel = ({ tool }: { tool: ToolConfig }) => {
               <span className="text-sm">AI is thinking...</span>
             </div>
           ) : (
-            <div className="prose prose-sm max-w-none text-foreground">
+            <div className="prose prose-sm max-w-none text-foreground space-y-3">
+              {imageUrl && (
+                <img
+                  src={imageUrl}
+                  alt={input}
+                  className="rounded-xl w-full max-w-lg border border-border"
+                />
+              )}
               {output.split("\n").map((line, i) => {
                 if (line.startsWith("```")) return null;
                 if (line.startsWith("# ")) return <h3 key={i} className="text-foreground font-bold mt-2">{line.slice(2)}</h3>;
