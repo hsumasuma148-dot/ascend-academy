@@ -9,7 +9,6 @@ const SYSTEM_PROMPTS: Record<string, string> = {
   text: "You are a versatile writing assistant. Generate clear, original content that directly fulfills the user's request. Vary tone and structure based on the prompt. Do not use a fixed template.",
   code: "You are an expert programming assistant. Produce a working code snippet that solves the user's request. Use a fenced code block with the correct language tag, and add a brief explanation after the code if helpful. Tailor the language to what the user asks for.",
   chat: "You are a friendly, knowledgeable tutor on the LearnHub LMS platform. Answer the user's question helpfully and conversationally. Keep answers focused on what they actually asked.",
-  image: "You are an image prompt designer. The user describes an image idea. Respond with: 1) a refined, vivid image prompt, 2) suggested style/lighting/mood tags, 3) one short tip to improve their prompt. Do not claim an image was generated.",
 };
 
 Deno.serve(async (req) => {
@@ -28,19 +27,24 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
+    const isImage = tool === "image";
+    const model = isImage ? "google/gemini-2.5-flash-image" : "google/gemini-3-flash-preview";
+    const body: Record<string, unknown> = {
+      model,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: prompt },
+      ],
+    };
+    if (isImage) body.modalities = ["image", "text"];
+
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: prompt },
-        ],
-      }),
+      body: JSON.stringify(body),
     });
 
     if (resp.status === 429) {
@@ -65,8 +69,10 @@ Deno.serve(async (req) => {
     }
 
     const data = await resp.json();
-    const output = data.choices?.[0]?.message?.content ?? "";
-    return new Response(JSON.stringify({ output }), {
+    const message = data.choices?.[0]?.message ?? {};
+    const output: string = message.content ?? "";
+    const imageUrl: string | undefined = message.images?.[0]?.image_url?.url;
+    return new Response(JSON.stringify({ output, imageUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
