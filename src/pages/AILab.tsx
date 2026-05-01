@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface ToolConfig {
   id: string;
@@ -59,97 +61,6 @@ const aiTools: ToolConfig[] = [
   },
 ];
 
-// Dummy responses for demo
-const dummyResponses: Record<string, (input: string) => string> = {
-  text: (input) =>
-    `Here's the generated content based on your prompt:\n\n${input.length > 20 ? input.slice(0, 20) : input}... is a fascinating topic. Artificial Intelligence continues to transform how we live and work. From natural language processing to computer vision, AI applications are becoming increasingly sophisticated. The key to understanding AI lies in grasping fundamental concepts like machine learning algorithms, neural networks, and data preprocessing techniques. As the field evolves, professionals who combine domain expertise with AI skills will be in high demand across every industry.`,
-  code: (input) => {
-    if (input.toLowerCase().includes("python") || input.toLowerCase().includes("sort")) {
-      return `\`\`\`python
-def sort_list(items, reverse=False):
-    """Sort a list using the built-in sorted function.
-    
-    Args:
-        items: List to sort
-        reverse: If True, sort in descending order
-    
-    Returns:
-        Sorted list
-    """
-    return sorted(items, reverse=reverse)
-
-# Example usage
-numbers = [64, 34, 25, 12, 22, 11, 90]
-print(sort_list(numbers))  # [11, 12, 22, 25, 34, 64, 90]
-\`\`\``;
-    }
-    if (input.toLowerCase().includes("react") || input.toLowerCase().includes("useeffect")) {
-      return `\`\`\`tsx
-import { useState, useEffect } from 'react';
-
-const DataFetcher = ({ url }: { url: string }) => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch(err => console.error(err));
-  }, [url]);
-
-  if (loading) return <p>Loading...</p>;
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
-};
-\`\`\``;
-    }
-    return `\`\`\`javascript
-// Here's a solution for: ${input}
-function solution(input) {
-  // Process the input
-  const result = input
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-  
-  return result;
-}
-
-// Example
-console.log(solution("hello world"));
-// Output: "Hello World"
-\`\`\``;
-  },
-  chat: (input) =>
-    `Great question! "${input.slice(0, 50)}${input.length > 50 ? "..." : ""}"
-
-That's something many learners are curious about. Here's a concise answer:
-
-The key concepts to understand are:
-1. **Foundation** — Start with the basics and build a strong understanding
-2. **Practice** — Apply what you learn through hands-on projects
-3. **Community** — Join forums and study groups to accelerate learning
-4. **Consistency** — Dedicate regular time to studying and practicing
-
-Would you like me to elaborate on any of these points? I can also recommend specific courses from our catalog that match your interest!`,
-  image: (input) =>
-    `🎨 **Image Generated Successfully!**
-
-Based on your prompt: "${input.slice(0, 60)}${input.length > 60 ? "..." : ""}"
-
-*[In a production environment, this would display an AI-generated image]*
-
-**Image Details:**
-- Style: Digital illustration
-- Resolution: 1024 × 1024
-- Format: PNG with transparency
-
-💡 **Tip:** For better results, try adding details like style (realistic, cartoon, watercolor), lighting (dramatic, soft, neon), and mood (futuristic, cozy, minimal).`,
-};
-
 const AIToolPanel = ({ tool }: { tool: ToolConfig }) => {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -159,10 +70,20 @@ const AIToolPanel = ({ tool }: { tool: ToolConfig }) => {
     if (!input.trim()) return;
     setLoading(true);
     setOutput("");
-    // Simulate AI processing delay
-    await new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
-    setOutput(dummyResponses[tool.id](input));
-    setLoading(false);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-tool", {
+        body: { tool: tool.id, prompt: input },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setOutput(data?.output ?? "No response generated.");
+    } catch (e: any) {
+      const msg = e?.message ?? "Failed to generate response";
+      toast({ title: "AI error", description: msg, variant: "destructive" });
+      setOutput(`⚠️ ${msg}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
